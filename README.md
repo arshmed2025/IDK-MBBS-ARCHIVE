@@ -1,131 +1,170 @@
 # MBBS Resources — Organised Study Library
 
-A static website for organising First Year MBBS resources (topics, PYQs, histology slides, scanned notes).
+A minimal, static website for organising First Year MBBS resources.
 
 ---
 
-## 🚀 First Time Setup (Do Once)
+## 🚀 How to Put This on GitHub (Pick ONE method)
 
-### Step 1: Create a GitHub repo
-1. Go to [github.com/new](https://github.com/new)
-2. Name it `mbbs-resources` (or anything you like)
-3. Make it **Public**
-4. **DO NOT** check "Add a README" or ".gitignore" — leave everything empty
+---
+
+### Method 1: EASIEST — Upload Just One File (No coding needed)
+
+This works if you just want the site online fast.
+
+**Step 1: Build the site on your computer**
+```
+npm install
+npm run build
+```
+This creates a file at `dist/index.html` (about 380KB). This ONE file IS your entire website.
+
+**Step 2: Create a GitHub repo**
+1. Go to https://github.com/new
+2. Repository name: `mbbs-resources` (or anything you want)
+3. Set to **Public**
+4. Check ✅ "Add a README file"
 5. Click **Create repository**
 
-### Step 2: Push your code
-Open **Terminal** (Mac) or **Command Prompt** (Windows) and run these commands **one by one**:
+**Step 3: Upload the built file**
+1. In your new repo, click **Add file** → **Upload files**
+2. Go to your project's `dist/` folder on your computer
+3. Drag `index.html` into the upload box
+4. Click **Commit changes**
 
-```bash
-cd path/to/your/project/folder
-```
-Replace `path/to/your/project/folder` with the actual folder path. Example:
-- Mac: `cd ~/Desktop/mbbs-resources`
-- Windows: `cd C:\Users\YourName\Desktop\mbbs-resources`
+**Step 4: Enable GitHub Pages**
+1. Go to your repo's **Settings** tab (top menu bar)
+2. In the left sidebar, click **Pages**
+3. Under "Source", select **Deploy from a branch**
+4. Under "Branch", select **main** and folder **/ (root)**
+5. Click **Save**
+6. Wait 2-3 minutes
+7. Refresh the page — you'll see a green box with your site URL:
+   `https://YOUR-USERNAME.github.io/mbbs-resources/`
 
-Then run:
+**That's it! Your site is live.** 🎉
+
+> **To update:** Build again (`npm run build`), then on GitHub: click `index.html` → pencil icon → delete it → re-upload the new one from `dist/`.
+
+---
+
+### Method 2: Full Project Upload (Auto-deploys when you edit)
+
+This is better long-term. Every time you push changes, GitHub automatically rebuilds and deploys.
+
+**Step 1: Install Git**
+- Download from https://git-scm.com/downloads
+- Install with default settings
+
+**Step 2: Create a GitHub repo**
+1. Go to https://github.com/new
+2. Repository name: `mbbs-resources`
+3. Set to **Public**
+4. Do NOT check any boxes (no README, no .gitignore)
+5. Click **Create repository**
+
+**Step 3: Push your code**
+
+Open Terminal/Command Prompt in your project folder and run these commands ONE BY ONE:
+
 ```bash
 git init
 git add .
 git commit -m "first upload"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/mbbs-resources.git
+git remote add origin https://github.com/YOUR-USERNAME/mbbs-resources.git
 git push -u origin main
 ```
-⚠️ Replace `YOUR_USERNAME` with your actual GitHub username.
 
-### Step 3: Enable GitHub Pages
+Replace `YOUR-USERNAME` with your actual GitHub username.
+
+**Step 4: Enable GitHub Pages with Actions**
 1. Go to your repo on GitHub
-2. Click **Settings** (top bar)
+2. Click **Settings** (top menu bar)
 3. Click **Pages** (left sidebar)
-4. Under "Source" → select **GitHub Actions**
-5. Done! The workflow file in your code will auto-build and deploy
+4. Under "Source", change the dropdown from "Deploy from a branch" to **GitHub Actions**
+5. That's it — don't select anything else, just change that dropdown
 
-### Step 4: Wait 2 minutes
-- Go to **Actions** tab in your repo — you'll see it building
-- Once the green ✅ appears, your site is live at:
-```
-https://YOUR_USERNAME.github.io/mbbs-resources/
-```
+**Step 5: Verify**
+1. Go to the **Actions** tab in your repo
+2. You should see a workflow running (yellow dot = building, green check = done)
+3. Once green, your site is live at:
+   `https://YOUR-USERNAME.github.io/mbbs-resources/`
 
 ---
 
-## 🔄 How to Push Updates (Every Time You Make Changes)
+## ✏️ How to Update Content (After Method 2)
 
-After editing any file (like adding topics in `src/data/content.ts`), run these 3 commands:
-
+### Option A: Edit on your computer + push
 ```bash
-cd path/to/your/project/folder
+# Edit src/data/content.ts
+# Then:
 git add .
 git commit -m "added new topics"
 git push
 ```
+GitHub auto-rebuilds in ~1 minute.
 
-That's it. GitHub will auto-rebuild and deploy in ~1 minute.
+### Option B: Edit directly on GitHub
+1. Go to your repo on GitHub
+2. Navigate to `src/data/content.ts`
+3. Click the ✏️ pencil icon
+4. Make your changes
+5. Click **Commit changes**
+6. GitHub auto-rebuilds and deploys
 
-### Short version (copy-paste every time):
+---
+
+## 🔧 Troubleshooting
+
+### "I see a blank/white page"
+
+**If you used Method 1:**
+- You probably uploaded the WRONG `index.html`. There are TWO:
+  - ❌ `index.html` in the root folder (1KB, won't work — this is the source file)
+  - ✅ `index.html` inside the `dist/` folder (380KB, this is the built site)
+- Delete the wrong one, upload the one from `dist/`
+
+**If you used Method 2:**
+- Go to Settings → Pages → make sure Source is **GitHub Actions** (not "Deploy from a branch")
+- Go to the Actions tab — is there a red ❌? Click on it to see the error
+- Make sure you pushed ALL files (run `git add .` before committing)
+
+### "It says 404"
+- Wait 2-3 minutes after deploying. GitHub needs time.
+- Make sure the repo is **Public** (Settings → General → scroll to Danger Zone → change visibility)
+
+### "git: command not found"
+- Install Git: https://git-scm.com/downloads
+
+### "remote already exists"
 ```bash
-git add . && git commit -m "update" && git push
+git remote set-url origin https://github.com/YOUR-USERNAME/mbbs-resources.git
 ```
-
----
-
-## ✏️ Edit Directly on GitHub (No Terminal Needed)
-
-After the first setup, you can edit files **directly on GitHub**:
-
-1. Go to your repo → `src/data/content.ts`
-2. Click the **pencil icon** (✏️) top-right
-3. Add your topics
-4. Click **Commit changes** (green button)
-5. Site auto-rebuilds in ~1 minute
-
----
-
-## 📝 Adding Content
-
-Edit `src/data/content.ts`. Each topic is one line:
-
-```typescript
-t('anatomy', 'anat-ul', 'Bones of Upper Limb'),
-```
-
-With type and high-yield flag:
-```typescript
-t('anatomy', 'anat-ul', 'Brachial Plexus', 'topics', true),
-```
-
-With description (images, tables, etc.):
-```typescript
-t('anatomy', 'anat-histo', 'Simple Squamous Epithelium', 'histology', false,
-`## Key Features
-- Single layer of flat cells
-
-![Diagram](https://example.com/image.jpg)
-`),
-```
-
----
-
-## 🔒 Secret Admin Guide
-
-Double-click the footer text ("Built for focused study") to access the full content guide with formatting reference, image hosting tips, table syntax, and more.
-
----
-
-## 🛠️ Troubleshooting
-
-### "git is not recognized"
-→ Install Git from [git-scm.com](https://git-scm.com/downloads) and restart your terminal.
-
-### "remote origin already exists"
-→ Run: `git remote set-url origin https://github.com/YOUR_USERNAME/mbbs-resources.git`
 
 ### "failed to push"
-→ Run: `git pull origin main --rebase` then `git push` again.
+```bash
+git pull --rebase origin main
+git push
+```
 
-### Build fails on GitHub
-→ Go to **Actions** tab → click the failed run → read the error. Usually a typo in `content.ts` (missing comma, unclosed backtick).
+### "npm: command not found"
+- Install Node.js: https://nodejs.org (download the LTS version)
 
-### Site shows blank page
-→ Make sure you selected **GitHub Actions** (not "Deploy from branch") in Settings → Pages → Source.
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── App.tsx                      # Main app
+├── data/content.ts              # ALL your topics, subjects, chapters
+├── components/
+│   ├── Sidebar.tsx              # Navigation
+│   ├── TopicItem.tsx            # Topic row (View button if has content)
+│   ├── TopicDetail.tsx          # Full topic view with print
+│   ├── MarkdownRenderer.tsx     # Renders descriptions
+│   ├── ContributePage.tsx       # Public "email me content" page
+│   └── ContentGuide.tsx         # Hidden admin guide (double-click footer)
+└── utils/cn.ts                  # Utility
+```
