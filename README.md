@@ -1,112 +1,131 @@
-# MBBS Resources
+# MBBS Resources — Organised Study Library
 
-A minimal, static website to organise First Year MBBS study resources.
-
----
-
-## How to Upload to GitHub (Step by Step)
-
-### Method 1: Drag & Drop (Easiest — No coding needed)
-
-1. **Build the site** (if not already built):
-   ```
-   npm install
-   npm run build
-   ```
-   This creates a `dist/index.html` file — that's your entire website in ONE file.
-
-2. **Go to GitHub** → [github.com/new](https://github.com/new) → Create a new repository
-   - Name it anything (e.g., `mbbs-resources`)
-   - Make it **Public**
-   - Click **Create repository**
-
-3. **Upload the file**:
-   - Click **"uploading an existing file"** link
-   - Drag the `dist/index.html` file into the upload area
-   - Click **Commit changes**
-
-4. **Enable GitHub Pages**:
-   - Go to **Settings** → **Pages** (left sidebar)
-   - Under "Source", select **Deploy from a branch**
-   - Branch: **main**, Folder: **/ (root)**
-   - Click **Save**
-
-5. **Wait 1-2 minutes** → Your site is live at:
-   ```
-   https://YOUR-USERNAME.github.io/mbbs-resources/
-   ```
+A static website for organising First Year MBBS resources (topics, PYQs, histology slides, scanned notes).
 
 ---
 
-### Method 2: Upload Full Project (Better — Easy to edit later)
+## 🚀 First Time Setup (Do Once)
 
-1. **Go to GitHub** → [github.com/new](https://github.com/new) → Create a new repository
-   - Name: `mbbs-resources`
-   - Public
-   - Click **Create repository**
+### Step 1: Create a GitHub repo
+1. Go to [github.com/new](https://github.com/new)
+2. Name it `mbbs-resources` (or anything you like)
+3. Make it **Public**
+4. **DO NOT** check "Add a README" or ".gitignore" — leave everything empty
+5. Click **Create repository**
 
-2. **On your computer**, open terminal in the project folder:
-   ```bash
-   git init
-   git add .
-   git commit -m "first upload"
-   git branch -M main
-   git remote add origin https://github.com/YOUR-USERNAME/mbbs-resources.git
-   git push -u origin main
-   ```
+### Step 2: Push your code
+Open **Terminal** (Mac) or **Command Prompt** (Windows) and run these commands **one by one**:
 
-3. **Enable GitHub Pages with Actions**:
-   - Go to **Settings** → **Pages**
-   - Under "Source", select **GitHub Actions**
-   - The included workflow file will auto-build and deploy
+```bash
+cd path/to/your/project/folder
+```
+Replace `path/to/your/project/folder` with the actual folder path. Example:
+- Mac: `cd ~/Desktop/mbbs-resources`
+- Windows: `cd C:\Users\YourName\Desktop\mbbs-resources`
 
-4. **Every time you edit `content.ts` and push**, the site auto-updates!
+Then run:
+```bash
+git init
+git add .
+git commit -m "first upload"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/mbbs-resources.git
+git push -u origin main
+```
+⚠️ Replace `YOUR_USERNAME` with your actual GitHub username.
+
+### Step 3: Enable GitHub Pages
+1. Go to your repo on GitHub
+2. Click **Settings** (top bar)
+3. Click **Pages** (left sidebar)
+4. Under "Source" → select **GitHub Actions**
+5. Done! The workflow file in your code will auto-build and deploy
+
+### Step 4: Wait 2 minutes
+- Go to **Actions** tab in your repo — you'll see it building
+- Once the green ✅ appears, your site is live at:
+```
+https://YOUR_USERNAME.github.io/mbbs-resources/
+```
 
 ---
 
-## How to Edit Content
+## 🔄 How to Push Updates (Every Time You Make Changes)
 
-The only file you need to edit: **`src/data/content.ts`**
+After editing any file (like adding topics in `src/data/content.ts`), run these 3 commands:
 
-### Add a topic (no description):
+```bash
+cd path/to/your/project/folder
+git add .
+git commit -m "added new topics"
+git push
+```
+
+That's it. GitHub will auto-rebuild and deploy in ~1 minute.
+
+### Short version (copy-paste every time):
+```bash
+git add . && git commit -m "update" && git push
+```
+
+---
+
+## ✏️ Edit Directly on GitHub (No Terminal Needed)
+
+After the first setup, you can edit files **directly on GitHub**:
+
+1. Go to your repo → `src/data/content.ts`
+2. Click the **pencil icon** (✏️) top-right
+3. Add your topics
+4. Click **Commit changes** (green button)
+5. Site auto-rebuilds in ~1 minute
+
+---
+
+## 📝 Adding Content
+
+Edit `src/data/content.ts`. Each topic is one line:
+
 ```typescript
 t('anatomy', 'anat-ul', 'Bones of Upper Limb'),
 ```
 
-### Add a topic with type:
+With type and high-yield flag:
 ```typescript
-t('anatomy', 'anat-ul', 'Upper Limb PYQ 2024', 'pyq'),
+t('anatomy', 'anat-ul', 'Brachial Plexus', 'topics', true),
 ```
 
-### Mark as High Yield:
-```typescript
-t('anatomy', 'anat-ul', 'Brachial Plexus', 'topic', true),
-```
-
-### Add with description (images, tables, etc.):
+With description (images, tables, etc.):
 ```typescript
 t('anatomy', 'anat-histo', 'Simple Squamous Epithelium', 'histology', false,
 `## Key Features
 - Single layer of flat cells
-- Found in alveoli, blood vessels
 
-![Epithelium Diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/...)
-
-| Feature | Detail |
-|---------|--------|
-| Shape | Flat, scale-like |
-| Nucleus | Central, oval |
+![Diagram](https://example.com/image.jpg)
 `),
 ```
 
-After editing, just push to GitHub — the site auto-rebuilds.
+---
+
+## 🔒 Secret Admin Guide
+
+Double-click the footer text ("Built for focused study") to access the full content guide with formatting reference, image hosting tips, table syntax, and more.
 
 ---
 
-## Local Development
+## 🛠️ Troubleshooting
 
-```bash
-npm install
-npm run dev      # preview at localhost:5173
-npm run build    # build for deployment
-```
+### "git is not recognized"
+→ Install Git from [git-scm.com](https://git-scm.com/downloads) and restart your terminal.
+
+### "remote origin already exists"
+→ Run: `git remote set-url origin https://github.com/YOUR_USERNAME/mbbs-resources.git`
+
+### "failed to push"
+→ Run: `git pull origin main --rebase` then `git push` again.
+
+### Build fails on GitHub
+→ Go to **Actions** tab → click the failed run → read the error. Usually a typo in `content.ts` (missing comma, unclosed backtick).
+
+### Site shows blank page
+→ Make sure you selected **GitHub Actions** (not "Deploy from branch") in Settings → Pages → Source.
