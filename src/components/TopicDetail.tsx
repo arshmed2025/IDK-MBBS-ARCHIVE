@@ -4,7 +4,9 @@ import {
   Star,
   BookOpen,
   FileText,
+  FileDown,
   Microscope,
+  ScanLine,
   PenLine,
   X,
   ZoomIn,
@@ -30,6 +32,12 @@ const categoryMeta: Record<
     color: 'text-blue-600',
     bg: 'bg-blue-50',
   },
+  pyq_pdfs: {
+    icon: <FileDown size={14} />,
+    label: 'PYQ PDF',
+    color: 'text-rose-600',
+    bg: 'bg-rose-50',
+  },
   pyqs: {
     icon: <FileText size={14} />,
     label: 'Previous Year Question',
@@ -41,6 +49,12 @@ const categoryMeta: Record<
     label: 'Histology',
     color: 'text-emerald-600',
     bg: 'bg-emerald-50',
+  },
+  radiology: {
+    icon: <ScanLine size={14} />,
+    label: 'Radiology',
+    color: 'text-cyan-600',
+    bg: 'bg-cyan-50',
   },
   notes: {
     icon: <PenLine size={14} />,
@@ -63,7 +77,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
   return (
     <>
       <div className="mx-auto max-w-3xl">
-        {/* Top bar — hidden on print */}
+        {/* Top bar */}
         <div className="no-print mb-5 flex items-center justify-between">
           <button
             onClick={onBack}
@@ -84,9 +98,9 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
           )}
         </div>
 
-        {/* ─── PRINTABLE AREA — everything inside here prints ─── */}
+        {/* Printable area */}
         <div id="print-area">
-          {/* Print-only header — simple static, shown only on paper */}
+          {/* Print header */}
           <div className="print-only">
             <p className="text-[7.5pt] uppercase tracking-[0.05em] text-gray-400">MBBS Resources</p>
             <div className="mb-4 mt-1 border-b border-gray-200" />
@@ -96,9 +110,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
           <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
             {subject && (
               <>
-                <span>
-                  {subject.icon} {subject.name}
-                </span>
+                <span>{subject.icon} {subject.name}</span>
                 <span className="text-slate-300">/</span>
               </>
             )}
@@ -118,20 +130,14 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
 
           {/* Meta badges */}
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium',
-                cat.bg,
-                cat.color
-              )}
-            >
+            <span className={cn('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium', cat.bg, cat.color)}>
               {cat.icon}
               {cat.label}
             </span>
             {topic.important && (
               <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-600">
                 <Star size={12} className="fill-amber-400" />
-                High Yield
+                Very Important
               </span>
             )}
           </div>
@@ -156,29 +162,28 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
             )}
           </div>
 
-          {/* Histology tip — on screen only */}
-          {topic.category === 'histology' && topic.content && (
+          {/* Tip for histology/radiology */}
+          {(topic.category === 'histology' || topic.category === 'radiology') && topic.content && (
             <div className="no-print mt-8 rounded-xl border border-emerald-100 bg-emerald-50/50 px-4 py-3">
               <p className="text-xs text-emerald-700">
                 <ZoomIn size={12} className="mr-1.5 inline" />
-                <strong>Tip:</strong> Click on any image to zoom in and study
-                details.
+                <strong>Tip:</strong> Click on any image to zoom in and study details.
               </p>
             </div>
           )}
 
-          {/* Print-only footer — simple static, shown only on paper */}
+          {/* Print footer */}
           <div className="print-only mt-10">
             <div className="border-t border-gray-200 pb-2" />
             <p className="text-center text-[7pt] tracking-[0.02em] text-gray-400">
               MBBS Resources &middot; {subject?.name}
-              {unit ? ` · ${unit.name}` : ''} &middot; For personal study use only
+              {unit ? ` \u00B7 ${unit.name}` : ''} &middot; For personal study use only
             </p>
           </div>
         </div>
       </div>
 
-      {/* Image zoom overlay — not inside print area */}
+      {/* Image zoom overlay */}
       {zoomedImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"

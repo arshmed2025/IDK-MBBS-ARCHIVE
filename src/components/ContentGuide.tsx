@@ -5,7 +5,6 @@ interface ContentGuideProps {
   onBack: () => void;
 }
 
-/* ── Copy-able code block ─────────────────────────────────────────────────── */
 function CopyBlock({ code, label }: { code: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
@@ -35,7 +34,6 @@ function CopyBlock({ code, label }: { code: string; label?: string }) {
   );
 }
 
-/* ── Collapsible section ──────────────────────────────────────────────────── */
 function Section({ title, icon, children, defaultOpen = false }: { title: string; icon: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -50,22 +48,10 @@ function Section({ title, icon, children, defaultOpen = false }: { title: string
   );
 }
 
-/* ── Preview box showing what markdown renders as ─────────────────────────── */
-function Preview({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="my-3 rounded-xl border border-dashed border-blue-200 bg-blue-50/30 p-4">
-      <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-blue-400">Preview — what it looks like</div>
-      <div className="text-sm text-slate-700">{children}</div>
-    </div>
-  );
-}
-
-/* ── Small inline code style ──────────────────────────────────────────────── */
 function C({ children }: { children: React.ReactNode }) {
   return <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700">{children}</code>;
 }
 
-/* ── Main Guide ───────────────────────────────────────────────────────────── */
 export function ContentGuide({ onBack }: ContentGuideProps) {
   return (
     <div className="max-w-3xl pb-16">
@@ -80,88 +66,61 @@ export function ContentGuide({ onBack }: ContentGuideProps) {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Admin — Content Guide</h1>
-            <p className="text-sm text-slate-400">Complete reference for adding and formatting content.</p>
+            <p className="text-sm text-slate-400">How to add topics, images, tables, and everything else.</p>
           </div>
         </div>
       </div>
 
-      {/* The one file */}
+      {/* The file */}
       <div className="mb-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-5">
-        <h2 className="mb-1 text-sm font-semibold text-amber-800">🔑 Everything is in ONE file</h2>
+        <h2 className="mb-1 text-sm font-semibold text-amber-800">Everything is in ONE file</h2>
         <p className="text-sm leading-relaxed text-amber-700">
-          Open <C>src/data/content.ts</C> — scroll to the <C>topics</C> array — add your line — save — done.
+          Open <C>src/data/content.ts</C> — scroll to the topics array — add your line — save — done.
         </p>
       </div>
 
-      {/* ================================================================== */}
-      {/* SECTION 1: ADDING A TOPIC */}
-      {/* ================================================================== */}
-      <Section title="Adding a Topic (title only — no description needed)" icon="1️⃣" defaultOpen={true}>
-        <p className="mb-3 text-sm text-slate-500">Most topics only need a title. One line per topic.</p>
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 1: THE 6 FUNCTIONS */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="The 6 Functions — Pick One and Go" icon="1️⃣" defaultOpen={true}>
+        <p className="mb-3 text-sm text-slate-500">Each content type has its own function. Just pick the right one:</p>
         <CopyBlock
-          label="Format: t(subjectId, chapterId, title)"
-          code={`t('anatomy', 'anat-ul', 'Axillary Artery — Parts & Branches'),`}
+          label="6 functions — one per type"
+          code={`topic('anatomy', 'anat-ul', 'Shoulder Joint')       // regular topic
+pyqpdf('anatomy', 'anat-ul', 'Paper I — 2024')      // full PYQ paper (PDF)
+pyq('anatomy', 'anat-ul', 'Brachial Plexus Q 2024') // individual PYQ question
+histo('anatomy', 'anat-histology', 'Liver Slide')    // histology slide/diagram
+radio('anatomy', 'anat-thorax', 'Chest X-ray')       // radiology image
+note('anatomy', 'anat-ul', 'Quick Reference Table')  // notes/summary`}
         />
-        <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
-          <strong className="text-slate-700">Parameters:</strong>
-          <ul className="mt-1 ml-4 list-disc space-y-0.5">
-            <li><C>'anatomy'</C> — subject ID (see reference below)</li>
-            <li><C>'anat-ul'</C> — chapter/unit ID (see reference below)</li>
-            <li><C>'Axillary Artery...'</C> — the title shown to students</li>
-          </ul>
+        <div className="mt-3 rounded-lg bg-blue-50 border border-blue-100 p-3 text-xs text-blue-700">
+          <strong>That is it.</strong> 3 things: function name, subject ID, chapter ID, title. No extra parameters to remember.
         </div>
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 2: TOPIC TYPES */}
-      {/* ================================================================== */}
-      <Section title="Topic Types — Topics, PYQs, Histology, Notes" icon="2️⃣">
-        <p className="mb-3 text-sm text-slate-500">Add a 4th parameter to set the type. Default is <C>'topics'</C>.</p>
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 2: VERY IMPORTANT */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="Mark as Very Important ⭐" icon="2️⃣">
+        <p className="mb-3 text-sm text-slate-500">Just add <C>⭐ </C> (star + space) at the start of the title:</p>
         <CopyBlock
-          label="Four types"
-          code={`// Topic (default — no 4th param needed)
-t('anatomy', 'anat-ul', 'Brachial Plexus'),
+          label="Star prefix = Very Important"
+          code={`// Very Important — gets a ⭐ badge, appears in VIP section
+topic('anatomy', 'anat-ul', '⭐ Brachial Plexus'),
 
-// PYQ — previous year question
-t('anatomy', 'anat-ul', 'PYQ: Brachial Plexus (2024)', 'pyqs'),
-
-// Histology — slides, diagrams, microscopy
-t('anatomy', 'anat-histology', 'Liver Histology', 'histology'),
-
-// Notes — mnemonics, summaries, quick refs
-t('anatomy', 'anat-ul', 'Brachial Plexus Mnemonics', 'notes'),`}
+// Normal — no star prefix
+topic('anatomy', 'anat-ul', 'Forearm Muscles'),`}
         />
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 3: HIGH YIELD */}
-      {/* ================================================================== */}
-      <Section title="Mark as High Yield / Important ⭐" icon="3️⃣">
-        <p className="mb-3 text-sm text-slate-500">Add <C>true</C> as the 5th parameter. Gets a ⭐ badge and appears in High Yield section.</p>
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 3: ADDING DESCRIPTIONS */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="Adding a Description" icon="3️⃣">
+        <p className="mb-3 text-sm text-slate-500">Add content as the 4th parameter inside backticks:</p>
         <CopyBlock
-          label="5th param = true"
-          code={`// High yield topic
-t('anatomy', 'anat-ul', 'Brachial Plexus', 'topics', true),
-
-// High yield PYQ
-t('physiology', 'phys-cvs', 'PYQ: Cardiac Cycle (2024)', 'pyqs', true),
-
-// Not high yield (default)
-t('anatomy', 'anat-ul', 'Forearm Muscles'),`}
-        />
-      </Section>
-
-      {/* ================================================================== */}
-      {/* SECTION 4: ADDING DESCRIPTIONS */}
-      {/* ================================================================== */}
-      <Section title="Adding a Description / Detailed Notes" icon="4️⃣">
-        <p className="mb-3 text-sm text-slate-500">
-          Add description as the 6th parameter inside backticks <C>{`\`...\``}</C> (template literal). 
-          This is optional — only topics with a description show a "View" button.
-        </p>
-        <CopyBlock
-          label="6th param = content in backticks"
-          code={`t('anatomy', 'anat-ul', 'Brachial Plexus', 'topics', true,
+          label="4th parameter = description in backticks"
+          code={`topic('anatomy', 'anat-ul', '⭐ Brachial Plexus',
 \`## Formation
 Roots → Trunks → Divisions → Cords → Branches
 
@@ -173,215 +132,90 @@ Roots → Trunks → Divisions → Cords → Branches
 \`),`}
         />
         <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-100 p-3 text-xs text-emerald-700">
-          <strong>💡 Tip:</strong> If a topic doesn't need a description, just skip the 6th param. 
-          The topic will appear as a plain title — no "View" button shown.
+          <strong>No description?</strong> Just skip the 4th param. The topic will appear as a plain title — no View button shown.
         </div>
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 5: FORMATTING REFERENCE — THE BIG ONE */}
-      {/* ================================================================== */}
-      <Section title="Formatting Cheatsheet — Everything You Can Use" icon="📝" defaultOpen={true}>
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 4: FORMATTING EVERYTHING */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="Formatting — Headings, Bold, Lists, Tables, Images" icon="📝" defaultOpen={true}>
         <p className="mb-4 text-sm text-slate-500">
-          All formatting goes inside the backtick <C>{`\`...\``}</C> content (6th param). Here is every formatting option:
+          Everything below goes inside the backtick description (4th param).
         </p>
 
-        {/* ── Headings ─────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Headings</h3>
-          <CopyBlock code={`# Big Heading
+        {/* Headings */}
+        <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Headings</h3>
+        <CopyBlock code={`# Big Heading
 ## Medium Heading
 ### Small Heading`} />
-          <Preview>
-            <div className="text-2xl font-bold text-slate-900">Big Heading</div>
-            <div className="text-lg font-semibold text-slate-800 mt-2">Medium Heading</div>
-            <div className="text-base font-semibold text-slate-700 mt-2">Small Heading</div>
-          </Preview>
-        </div>
 
-        {/* ── Bold, Italic, Code ───────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Bold, Italic & Inline Code</h3>
-          <CopyBlock code={`**This is bold text**
-*This is italic text*
-***This is bold AND italic***
-\`This is inline code\``} />
-          <Preview>
-            <p><strong className="font-semibold text-slate-900">This is bold text</strong></p>
-            <p><em className="italic text-slate-700">This is italic text</em></p>
-            <p><strong className="font-semibold italic text-slate-900">This is bold AND italic</strong></p>
-            <p><code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-rose-600">This is inline code</code></p>
-          </Preview>
-        </div>
+        {/* Bold, Italic */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Bold &amp; Italic</h3>
+        <CopyBlock code={`**This is bold**
+*This is italic*
+***Bold and italic***
+\`inline code\``} />
 
-        {/* ── Lists ────────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Bullet Lists</h3>
-          <CopyBlock code={`- First point
-- Second point
-- Third point with **bold** inside`} />
-          <Preview>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>First point</li>
-              <li>Second point</li>
-              <li>Third point with <strong>bold</strong> inside</li>
-            </ul>
-          </Preview>
-        </div>
+        {/* Lists */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Lists</h3>
+        <CopyBlock code={`- Bullet point one
+- Bullet point two
+- Bullet point three
 
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Numbered Lists</h3>
-          <CopyBlock code={`1. First step
-2. Second step
-3. Third step`} />
-          <Preview>
-            <ol className="ml-5 list-decimal space-y-1">
-              <li>First step</li>
-              <li>Second step</li>
-              <li>Third step</li>
-            </ol>
-          </Preview>
-        </div>
+1. Numbered step one
+2. Numbered step two
+3. Numbered step three`} />
 
-        {/* ── Tables ───────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Tables</h3>
-          <CopyBlock label="Pipe syntax — separator line with dashes is required" code={`| Feature | Type A | Type B |
+        {/* Tables */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Tables</h3>
+        <CopyBlock label="Pipe syntax — 2nd line must have dashes" code={`| Feature | Type A | Type B |
 |---------|--------|--------|
-| Color | Red | Blue |
-| Size | Large | Small |
-| Weight | Heavy | Light |`} />
-          <Preview>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr>
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold text-slate-700">Feature</th>
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold text-slate-700">Type A</th>
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold text-slate-700">Type B</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="bg-slate-50/50">
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Color</td>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Red</td>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Blue</td>
-                  </tr>
-                  <tr>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Size</td>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Large</td>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Small</td>
-                  </tr>
-                  <tr className="bg-slate-50/50">
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Weight</td>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Heavy</td>
-                    <td className="border-b border-slate-100 px-3 py-2 text-slate-600">Light</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </Preview>
-          <div className="mt-2 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
-            <strong className="text-slate-700">Rules:</strong>
-            <ul className="mt-1 ml-4 list-disc space-y-0.5">
-              <li>Start each row with <C>|</C> and separate columns with <C>|</C></li>
-              <li>The 2nd line MUST have dashes: <C>|------|------|</C></li>
-              <li>You can use <C>**bold**</C> inside table cells</li>
-              <li>Columns don't need to be perfectly aligned — just use pipes</li>
-            </ul>
-          </div>
+| Color   | Red    | Blue   |
+| Size    | Large  | Small  |`} />
+
+        {/* Images */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Images &amp; Diagrams</h3>
+        <CopyBlock label="![caption text](image URL)" code={`![Liver histology — central vein](https://upload.wikimedia.org/your-image.jpg)`} />
+        <div className="mt-2 rounded-lg bg-violet-50 border border-violet-100 p-3 text-xs text-violet-700">
+          <strong>Where to upload images (free):</strong>
+          <ul className="mt-1 ml-4 list-disc space-y-0.5">
+            <li><strong>Imgur</strong> — imgur.com → Upload → Copy Direct Link</li>
+            <li><strong>Postimages</strong> — postimages.org → Upload → Copy Direct Link</li>
+            <li><strong>GitHub</strong> — upload to a repo → click file → Copy raw URL</li>
+            <li><strong>Wikipedia</strong> — search medical diagrams → Copy image URL</li>
+          </ul>
         </div>
 
-        {/* ── Images ───────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">🖼️ Images & Diagrams</h3>
-          <CopyBlock label="Syntax: ![caption](image-url)" code={`![Liver Histology — Central vein and hepatocytes](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Lobules_of_Liver.png/640px-Lobules_of_Liver.png)`} />
-          <Preview>
-            <div className="rounded-xl border border-slate-200 bg-slate-100 p-6 text-center text-slate-400 text-xs">
-              [ Image loads here — full width, rounded, with shadow ]
-              <div className="mt-2 text-slate-500">↑ Caption: "Liver Histology — Central vein and hepatocytes"</div>
-            </div>
-          </Preview>
-
-          <div className="mt-3 space-y-2">
-            <div className="rounded-lg bg-violet-50 border border-violet-100 p-3 text-xs text-violet-700">
-              <strong>🔬 For Histology Diagrams:</strong>
-              <ul className="mt-1 ml-4 list-disc space-y-0.5">
-                <li>Take a photo of your microscopy slide</li>
-                <li>Upload it (see hosting options below)</li>
-                <li>Paste the URL in the image syntax</li>
-                <li>The caption below will describe what to look for</li>
-              </ul>
-            </div>
-
-            <div className="rounded-lg bg-slate-50 border border-slate-200 p-3 text-xs text-slate-600">
-              <strong className="text-slate-800">Where to host images (free):</strong>
-              <ul className="mt-1 ml-4 list-disc space-y-1">
-                <li><strong>Imgur</strong> — Go to <C>imgur.com</C> → Upload → Copy "Direct Link"</li>
-                <li><strong>Postimages</strong> — Go to <C>postimages.org</C> → Upload → Copy "Direct link"</li>
-                <li><strong>GitHub</strong> — Upload to a repo → click file → Copy raw URL</li>
-                <li><strong>Wikipedia Commons</strong> — Search existing medical diagrams → Copy image URL</li>
-                <li><strong>Google Drive</strong> — Upload → Share → Get link → Change to "Anyone with link" → Use format:<br/>
-                  <C>{`https://drive.google.com/uc?export=view&id=YOUR_FILE_ID`}</C>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Multiple images ──────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Multiple Images in One Topic</h3>
-          <CopyBlock label="Just put each image on its own line" code={`## Low Power View
-![Kidney cortex — 4x magnification](https://your-image-url-1.jpg)
+        {/* Multiple images */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Multiple Images</h3>
+        <CopyBlock code={`## Low Power View
+![Kidney cortex 4x](https://url1.jpg)
 
 ## High Power View
-![PCT and DCT — 40x magnification](https://your-image-url-2.jpg)
+![PCT and DCT 40x](https://url2.jpg)`} />
 
-## Diagram
-![Nephron structure — labeled](https://your-image-url-3.jpg)`} />
-        </div>
-
-        {/* ── Blockquotes ──────────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Blockquotes (for mnemonics, important notes)</h3>
-          <CopyBlock code={`> **Remember:** Some Lovers Try Positions That They Can't Handle
+        {/* Blockquotes */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Mnemonics / Important Notes</h3>
+        <CopyBlock code={`> **Remember:** Some Lovers Try Positions That They Cant Handle
 > (Scaphoid, Lunate, Triquetral, Pisiform, Trapezium, Trapezoid, Capitate, Hamate)`} />
-          <Preview>
-            <blockquote className="border-l-[3px] border-blue-200 bg-blue-50/50 px-4 py-2 text-sm italic text-slate-600">
-              <p><strong className="text-slate-800">Remember:</strong> Some Lovers Try Positions That They Can't Handle</p>
-              <p>(Scaphoid, Lunate, Triquetral, Pisiform, Trapezium, Trapezoid, Capitate, Hamate)</p>
-            </blockquote>
-          </Preview>
-        </div>
 
-        {/* ── Horizontal rule ──────────────────────────────────────── */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Horizontal Line (separator)</h3>
-          <CopyBlock code={`Some text above
+        {/* Separator */}
+        <h3 className="mb-2 mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Horizontal Line</h3>
+        <CopyBlock code={`Text above
 
 ---
 
-Some text below`} />
-          <Preview>
-            <p className="text-slate-600">Some text above</p>
-            <hr className="my-2 border-slate-200" />
-            <p className="text-slate-600">Some text below</p>
-          </Preview>
-        </div>
+Text below`} />
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 6: FULL REAL EXAMPLES */}
-      {/* ================================================================== */}
-      <Section title="Full Real Examples — Copy & Modify" icon="📋">
-        
-        {/* Example 1: Histology topic with image + table */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-500">Example 1: Histology Topic with Diagram + Table</h3>
-          <CopyBlock
-            label="Histology topic with image, table, and ID points"
-            code={`t('anatomy', 'anat-histology', 'Liver Histology', 'histology', true,
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 5: COMPLETE EXAMPLES */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="Complete Copy-Paste Examples" icon="📋">
+
+        <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-500">Histology with Diagram + Table</h3>
+        <CopyBlock label="Histology topic" code={`histo('anatomy', 'anat-histology', '⭐ Liver Histology',
 \`## Liver — Microscopic Structure
 
 ### Classic Lobule
@@ -389,79 +223,46 @@ Some text below`} />
 - Central vein in the middle
 - Portal triads at corners
 
-![Liver histology — classic lobule structure](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Lobules_of_Liver.png/640px-Lobules_of_Liver.png)
-
-### Key Structures
+![Liver lobule](https://upload.wikimedia.org/your-image.jpg)
 
 | Structure | Description |
 |-----------|-------------|
-| **Hepatocytes** | Large polygonal cells in cords |
-| **Sinusoids** | Lined by fenestrated endothelium |
+| **Hepatocytes** | Large polygonal cells |
+| **Sinusoids** | Fenestrated endothelium |
 | **Kupffer cells** | Resident macrophages |
-| **Space of Disse** | Between hepatocytes and sinusoids |
-| **Bile canaliculi** | Tiny channels carrying bile |
-| **Portal triad** | Portal vein + hepatic artery + bile duct |
+| **Portal triad** | Vein + artery + bile duct |
 
-### ID Points for Exam
+### ID Points
 1. Look for hexagonal lobules
 2. Central vein — endothelium only
 3. Portal triads at periphery
-4. Cords of hepatocytes radiating outward
-\`),`}
-          />
-        </div>
+\`),`} />
 
-        {/* Example 2: Clinical topic with mnemonic */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-500">Example 2: Clinical Topic with Mnemonic + Table</h3>
-          <CopyBlock
-            label="Brachial plexus with mnemonic and injury table"
-            code={`t('anatomy', 'anat-ul', 'Brachial Plexus', 'topics', true,
-\`# Brachial Plexus
+        <h3 className="mb-2 mt-6 text-xs font-bold uppercase tracking-wider text-blue-500">Radiology with X-ray Image</h3>
+        <CopyBlock label="Radiology topic" code={`radio('medicine', 'med-resp', 'Chest X-ray — Pneumonia',
+\`## Findings in Pneumonia
 
-## Formation
-**Roots → Trunks → Divisions → Cords → Branches**
+### Lobar Pneumonia
+- **Homogeneous opacity** in one lobe
+- Air bronchogram sign
 
-> **Mnemonic:** *Robert Taylor Drinks Cold Beer*
+![Lobar pneumonia CXR](https://your-image-url.jpg)
 
-## Terminal Branches
+### Bronchopneumonia
+- **Patchy bilateral opacities**
+- Peribronchial distribution
 
-### Lateral Cord
-- Lateral pectoral nerve
-- Musculocutaneous nerve
-- Lateral root of median nerve
+| Finding | Lobar | Broncho |
+|---------|-------|---------|
+| Pattern | Homogeneous | Patchy |
+| Distribution | One lobe | Bilateral |
+| Air bronchogram | Yes | Rare |
+\`),`} />
 
-### Posterior Cord
-- Axillary nerve
-- Radial nerve
-- Thoracodorsal nerve
-
-### Medial Cord
-- Ulnar nerve
-- Medial root of median nerve
-- Medial pectoral nerve
-
----
-
-## Clinical Injuries
-
-| Injury | Root | Presentation |
-|--------|------|-------------|
-| **Erb-Duchenne** | C5-C6 | Waiter tip position |
-| **Klumpke** | C8-T1 | Claw hand |
-| **Wrist drop** | Radial | Cannot extend wrist |
-\`),`}
-          />
-        </div>
-
-        {/* Example 3: Simple PYQ */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-500">Example 3: PYQ with Answer</h3>
-          <CopyBlock
-            label="PYQ with formatted answer"
-            code={`t('physiology', 'phys-cvs', 'PYQ: Cardiac Cycle (2024)', 'pyqs', true,
+        <h3 className="mb-2 mt-6 text-xs font-bold uppercase tracking-wider text-blue-500">PYQ with Answer</h3>
+        <CopyBlock label="PYQ with formatted answer" code={`pyq('physiology', 'phys-cvs', '⭐ Cardiac Cycle Q (2024)',
 \`## Question
-Draw and label the Wiggers diagram. Explain the events of the cardiac cycle.
+Draw and label the Wiggers diagram. Explain events of the cardiac cycle.
 
 ---
 
@@ -474,228 +275,96 @@ Draw and label the Wiggers diagram. Explain the events of the cardiac cycle.
 4. Reduced ejection
 5. Isovolumetric relaxation
 6. Rapid filling
-7. Reduced filling (diastasis)
-
-### Key Pressures
-
-| Phase | Aortic | Ventricular | Atrial |
-|-------|--------|-------------|--------|
-| Systole peak | 120 mmHg | 120 mmHg | *a wave* |
-| Diastole | 80 mmHg | 0 mmHg | *v wave* |
 
 ### Heart Sounds
-- **S1** — closure of AV valves (mitral + tricuspid)
-- **S2** — closure of semilunar valves (aortic + pulmonary)
+- **S1** — closure of AV valves
+- **S2** — closure of semilunar valves
+\`),`} />
 
-![Wiggers Diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Wiggers_Diagram_2.svg/500px-Wiggers_Diagram_2.svg.png)
-\`),`}
-          />
-        </div>
-
-        {/* Example 4: Biochemistry pathway */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-500">Example 4: Biochemistry with Steps + Enzyme Table</h3>
-          <CopyBlock
-            label="Glycolysis with pathway steps and regulation"
-            code={`t('biochemistry', 'bio-carb', 'Glycolysis', 'topics', true,
-\`## Glycolysis — 10 Steps
-
-**Location:** Cytoplasm
-**Net yield:** 2 ATP + 2 NADH + 2 Pyruvate
-
-### Irreversible (Regulatory) Steps
-
-| Step | Enzyme | Regulation |
-|------|--------|------------|
-| 1 | **Hexokinase** | Inhibited by G6P |
-| 3 | **PFK-1** | *Rate-limiting*. Activated by AMP, F2,6BP |
-| 10 | **Pyruvate kinase** | Activated by F1,6BP |
-
-> **Key:** PFK-1 is the **rate-limiting enzyme** of glycolysis
-
-### Energy Balance
-- ATP used: **2** (steps 1 and 3)
-- ATP produced: **4** (steps 7 and 10)
-- Net ATP: **2**
-- NADH produced: **2** (step 6)
-
-![Glycolysis Pathway](https://your-diagram-url.jpg)
-\`),`}
-          />
-        </div>
-
-        {/* Example 5: Bulk titles, no descriptions */}
-        <div className="mb-6">
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-500">Example 5: Bulk Add — Just Titles (No Descriptions)</h3>
-          <CopyBlock
-            label="Most topics only need titles — fast to add!"
-            code={`// Pharmacology — ANS chapter
-t('pharmacology', 'pharm-ans', 'Cholinergic Receptors'),
-t('pharmacology', 'pharm-ans', 'Anticholinesterases'),
-t('pharmacology', 'pharm-ans', 'Atropine — Actions & Uses'),
-t('pharmacology', 'pharm-ans', 'Adrenaline', 'topics', true),
-t('pharmacology', 'pharm-ans', 'Beta Blockers'),
-t('pharmacology', 'pharm-ans', 'Ganglion Blockers'),
-t('pharmacology', 'pharm-ans', 'NMJ Blockers'),
-t('pharmacology', 'pharm-ans', 'PYQ: ANS Drugs (2024)', 'pyqs'),
-t('pharmacology', 'pharm-ans', 'ANS Quick Ref Table', 'notes'),`}
-          />
-        </div>
+        <h3 className="mb-2 mt-6 text-xs font-bold uppercase tracking-wider text-blue-500">Bulk Add — Just Titles</h3>
+        <CopyBlock label="Fast — no descriptions needed" code={`topic('pharmacology', 'pharm-ans', 'Cholinergic Receptors'),
+topic('pharmacology', 'pharm-ans', 'Anticholinesterases'),
+topic('pharmacology', 'pharm-ans', '⭐ Atropine — Actions & Uses'),
+topic('pharmacology', 'pharm-ans', 'Beta Blockers'),
+pyq('pharmacology', 'pharm-ans', 'ANS Drugs Q (2024)'),
+note('pharmacology', 'pharm-ans', 'ANS Quick Ref Table'),`} />
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 7: ADDING SUBJECTS & CHAPTERS */}
-      {/* ================================================================== */}
-      <Section title="Adding a New Subject or Chapter" icon="🏗️">
-        <p className="mb-3 text-sm text-slate-500">Scroll to the <C>subjects</C> or <C>units</C> arrays in the same file.</p>
-        
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 6: ADD SUBJECTS & CHAPTERS */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="Adding New Subjects or Chapters" icon="🏗️">
         <CopyBlock
           label="Add a new subject"
-          code={`// In the subjects array, add:
+          code={`// In the subjects array:
 { id: 'community', name: 'Community Medicine', icon: '🏥', year: 2 },`}
         />
-
         <CopyBlock
           label="Add chapters for it"
-          code={`// In the units array, add:
+          code={`// In the units array:
 { id: 'comm-epi', subjectId: 'community', name: 'Epidemiology', order: 1 },
-{ id: 'comm-bio', subjectId: 'community', name: 'Biostatistics', order: 2 },
-{ id: 'comm-nutrition', subjectId: 'community', name: 'Nutrition', order: 3 },`}
+{ id: 'comm-bio', subjectId: 'community', name: 'Biostatistics', order: 2 },`}
         />
-
         <CopyBlock
-          label="Then add topics for those chapters"
-          code={`t('community', 'comm-epi', 'Study Designs — Overview'),
-t('community', 'comm-epi', 'Measures of Disease Frequency'),
-t('community', 'comm-bio', 'Mean, Median, Mode'),`}
+          label="Then add topics"
+          code={`topic('community', 'comm-epi', 'Study Designs — Overview'),
+topic('community', 'comm-bio', 'Mean, Median, Mode'),`}
         />
-
-        <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
-          <strong className="text-slate-700">Rules:</strong>
-          <ul className="mt-1 ml-4 list-disc space-y-0.5">
-            <li>Subject <C>id</C> must be unique and lowercase (no spaces)</li>
-            <li>Chapter <C>id</C> must be unique — use prefix like <C>comm-</C></li>
-            <li>Chapter <C>subjectId</C> must match the subject <C>id</C> exactly</li>
-            <li><C>order</C> controls the display order within a subject</li>
-            <li><C>year</C> must be 1, 2, 3, or 4</li>
-          </ul>
-        </div>
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 8: SUBJECT & CHAPTER ID REFERENCE */}
-      {/* ================================================================== */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 7: ID REFERENCE */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
       <Section title="Subject & Chapter ID Reference" icon="🗂️">
-        <p className="mb-3 text-sm text-slate-500">Use these exact IDs when adding topics.</p>
         <div className="space-y-3">
-          <IDGroup
-            title="Year 1"
-            items={[
-              { subject: '🦴 Anatomy', id: 'anatomy', chapters: ['anat-ul (Upper Limb)', 'anat-ll (Lower Limb)', 'anat-thorax (Thorax)', 'anat-abdomen (Abdomen & Pelvis)', 'anat-headneck (Head & Neck)', 'anat-neuro (Neuroanatomy)', 'anat-embryo (Embryology)', 'anat-histology (General Histology)', 'anat-genetics (Genetics)'] },
-              { subject: '🫀 Physiology', id: 'physiology', chapters: ['phys-general (General)', 'phys-blood (Blood & Immunity)', 'phys-nerve (Nerve & Muscle)', 'phys-cvs (CVS)', 'phys-resp (Respiratory)', 'phys-renal (Renal)', 'phys-git (GI)', 'phys-endo (Endocrine)', 'phys-cns (CNS & Senses)', 'phys-repro (Reproductive)'] },
-              { subject: '🧬 Biochemistry', id: 'biochemistry', chapters: ['bio-chemistry (Biomolecules)', 'bio-enzymes (Enzymology)', 'bio-carb (Carb Metabolism)', 'bio-lipid (Lipid Metabolism)', 'bio-protein (Protein & AA)', 'bio-nucleic (Nucleic Acid & Mol Bio)', 'bio-vitamins (Vitamins & Minerals)', 'bio-hormones (Hormones & Signaling)', 'bio-clinical (Clinical Biochem)'] },
-            ]}
-          />
-          <IDGroup
-            title="Year 2"
-            items={[
-              { subject: '🔬 Pathology', id: 'pathology', chapters: ['path-general (General Path)', 'path-hemato (Hematology)', 'path-systemic (Systemic Path)', 'path-clinical (Clinical Path)'] },
-              { subject: '💊 Pharmacology', id: 'pharmacology', chapters: ['pharm-general (General Pharm)', 'pharm-ans (ANS)', 'pharm-cvs (CVS Drugs)', 'pharm-cns (CNS Drugs)', 'pharm-chemo (Chemotherapy)', 'pharm-endo (Endocrine Pharm)'] },
-              { subject: '🦠 Microbiology', id: 'microbiology', chapters: ['micro-general (General Micro)', 'micro-bacteria (Bacteriology)', 'micro-virus (Virology)', 'micro-parasit (Parasitology)', 'micro-immuno (Immunology)'] },
-              { subject: '⚖️ Forensic Medicine', id: 'forensic', chapters: ['fmed-general (Forensic Path)', 'fmed-tox (Toxicology)', 'fmed-law (Med Jurisprudence)'] },
-            ]}
-          />
-          <IDGroup
-            title="Year 3"
-            items={[
-              { subject: '🩺 Medicine', id: 'medicine', chapters: ['med-cvs (Cardio)', 'med-resp (Respiratory)', 'med-git (Gastro)', 'med-neuro (Neuro)', 'med-endo (Endo)', 'med-renal (Nephro)'] },
-              { subject: '🔪 Surgery', id: 'surgery', chapters: ['surg-general (General)', 'surg-git (GI Surgery)', 'surg-uro (Urology)'] },
-              { subject: '🤰 OBG', id: 'obg', chapters: ['obg-obstetrics (Obstetrics)', 'obg-gynec (Gynaecology)'] },
-              { subject: '👶 Pediatrics', id: 'peds', chapters: ['peds-neonato (Neonatology)', 'peds-growth (Growth & Nutrition)', 'peds-infect (Infections)'] },
-            ]}
-          />
-          <IDGroup
-            title="Year 4"
-            items={[
-              { subject: '🦿 Orthopaedics', id: 'ortho', chapters: ['ortho-trauma (Trauma)', 'ortho-general (General)'] },
-              { subject: '👁️ Ophthalmology', id: 'ophthalmology', chapters: ['ophthal-ant (Anterior)', 'ophthal-post (Posterior)', 'ophthal-general (General)'] },
-              { subject: '👂 ENT', id: 'ent', chapters: ['ent-ear (Ear)', 'ent-nose (Nose)', 'ent-throat (Throat)'] },
-              { subject: '🧴 Dermatology', id: 'dermatology', chapters: ['derm-general (General)', 'derm-infect (Infections)'] },
-              { subject: '🧠 Psychiatry', id: 'psychiatry', chapters: ['psych-general (General)', 'psych-disorders (Disorders)'] },
-              { subject: '📡 Radiology', id: 'radiology', chapters: ['radio-general (General)', 'radio-systemic (Systemic)'] },
-            ]}
-          />
+          <IDGroup title="Year 1" items={[
+            { subject: 'Anatomy', id: 'anatomy', chapters: ['anat-ul', 'anat-ll', 'anat-thorax', 'anat-abdomen', 'anat-headneck', 'anat-neuro', 'anat-embryo', 'anat-histology', 'anat-genetics'] },
+            { subject: 'Physiology', id: 'physiology', chapters: ['phys-general', 'phys-blood', 'phys-nerve', 'phys-cvs', 'phys-resp', 'phys-renal', 'phys-git', 'phys-endo', 'phys-cns', 'phys-repro'] },
+            { subject: 'Biochemistry', id: 'biochemistry', chapters: ['bio-chemistry', 'bio-enzymes', 'bio-carb', 'bio-lipid', 'bio-protein', 'bio-nucleic', 'bio-vitamins', 'bio-hormones', 'bio-clinical'] },
+          ]} />
+          <IDGroup title="Year 2" items={[
+            { subject: 'Pathology', id: 'pathology', chapters: ['path-general', 'path-hemato', 'path-systemic', 'path-clinical'] },
+            { subject: 'Pharmacology', id: 'pharmacology', chapters: ['pharm-general', 'pharm-ans', 'pharm-cvs', 'pharm-cns', 'pharm-chemo', 'pharm-endo'] },
+            { subject: 'Microbiology', id: 'microbiology', chapters: ['micro-general', 'micro-bacteria', 'micro-virus', 'micro-parasit', 'micro-immuno'] },
+            { subject: 'Forensic Med', id: 'forensic', chapters: ['fmed-general', 'fmed-tox', 'fmed-law'] },
+          ]} />
+          <IDGroup title="Year 3" items={[
+            { subject: 'Medicine', id: 'medicine', chapters: ['med-cvs', 'med-resp', 'med-git', 'med-neuro', 'med-endo', 'med-renal'] },
+            { subject: 'Surgery', id: 'surgery', chapters: ['surg-general', 'surg-git', 'surg-uro'] },
+            { subject: 'OBG', id: 'obg', chapters: ['obg-obstetrics', 'obg-gynec'] },
+            { subject: 'Pediatrics', id: 'peds', chapters: ['peds-neonato', 'peds-growth', 'peds-infect'] },
+          ]} />
+          <IDGroup title="Year 4" items={[
+            { subject: 'Orthopaedics', id: 'ortho', chapters: ['ortho-trauma', 'ortho-general'] },
+            { subject: 'Ophthalmology', id: 'ophthalmology', chapters: ['ophthal-ant', 'ophthal-post', 'ophthal-general'] },
+            { subject: 'ENT', id: 'ent', chapters: ['ent-ear', 'ent-nose', 'ent-throat'] },
+            { subject: 'Dermatology', id: 'dermatology', chapters: ['derm-general', 'derm-infect'] },
+            { subject: 'Psychiatry', id: 'psychiatry', chapters: ['psych-general', 'psych-disorders'] },
+            { subject: 'Radiology', id: 'radiology', chapters: ['radio-general', 'radio-systemic'] },
+          ]} />
         </div>
       </Section>
 
-      {/* ================================================================== */}
-      {/* SECTION 9: COMMON MISTAKES */}
-      {/* ================================================================== */}
-      <Section title="Common Mistakes to Avoid" icon="⚠️">
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 8: COMMON MISTAKES */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <Section title="Common Mistakes" icon="⚠️">
         <div className="space-y-3">
           <MistakeRow
-            wrong={`t('anatomy', 'anat-ul', 'Pott's Fracture'),`}
-            right={`t('anatomy', 'anat-ul', 'Potts Fracture'),`}
-            reason="Apostrophe breaks the string. Remove it or use backslash escape."
-          />
-          <MistakeRow
-            wrong={`t('anatomy', 'anat-ul', 'Brachial Plexus')`}
-            right={`t('anatomy', 'anat-ul', 'Brachial Plexus'),`}
+            wrong={`topic('anatomy', 'anat-ul', 'Potts Fracture')`}
+            right={`topic('anatomy', 'anat-ul', 'Potts Fracture'),`}
             reason="Missing comma at end. Every line must end with a comma."
           />
           <MistakeRow
-            wrong={`t("anatomy", "anat-ul", "Brachial Plexus"),`}
-            right={`t('anatomy', 'anat-ul', 'Brachial Plexus'),`}
-            reason="Use single quotes, not double quotes (consistency)."
+            wrong={`topic('anatomy', 'upper-limb', 'Title'),`}
+            right={`topic('anatomy', 'anat-ul', 'Title'),`}
+            reason="Wrong chapter ID. Check the reference table above."
           />
           <MistakeRow
-            wrong={`t('anatomy', 'upper-limb', 'Brachial Plexus'),`}
-            right={`t('anatomy', 'anat-ul', 'Brachial Plexus'),`}
-            reason="Wrong chapter ID. Check the reference table above for exact IDs."
+            wrong={`topic('anatomy', 'anat-ul', 'Title', "description")`}
+            right={`topic('anatomy', 'anat-ul', 'Title', \`description\`)`}
+            reason="Description must be in backticks, not quotes."
           />
-          <MistakeRow
-            wrong={`t('anatomy', 'anat-ul', 'Plexus', 'topic'),`}
-            right={`t('anatomy', 'anat-ul', 'Plexus', 'topics'),`}
-            reason="Type must be exactly: topics, pyqs, histology, or notes (plural)."
-          />
-          <MistakeRow
-            wrong={`content: "## Heading\n- Point 1"`}
-            right={`\`## Heading\n- Point 1\``}
-            reason="Description must be in backticks (template literal), not quotes."
-          />
-        </div>
-      </Section>
-
-      {/* ================================================================== */}
-      {/* SECTION 10: QUICK STEPS */}
-      {/* ================================================================== */}
-      <Section title="Quick Steps — After Editing" icon="🚀">
-        <div className="space-y-2 text-sm text-slate-600">
-          <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">1</span>
-            <div>
-              <strong className="text-slate-800">Save the file</strong>
-              <p className="text-xs text-slate-400 mt-0.5">Save <C>src/data/content.ts</C> after editing</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">2</span>
-            <div>
-              <strong className="text-slate-800">Build</strong>
-              <p className="text-xs text-slate-400 mt-0.5">Run <C>npm run build</C> in terminal</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white">3</span>
-            <div>
-              <strong className="text-slate-800">Deploy</strong>
-              <p className="text-xs text-slate-400 mt-0.5">Upload the <C>dist/</C> folder to your hosting (Vercel, Netlify, GitHub Pages)</p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4 rounded-lg bg-emerald-50 border border-emerald-100 p-3 text-xs text-emerald-700">
-          <strong>💡 If build fails:</strong> You probably have a typo — missing comma, mismatched quotes, or wrong ID. 
-          Check the terminal error message — it will tell you the line number.
         </div>
       </Section>
 
@@ -707,17 +376,16 @@ t('community', 'comm-bio', 'Mean, Median, Mode'),`}
   );
 }
 
-/* ── Mistake comparison row ───────────────────────────────────────────────── */
 function MistakeRow({ wrong, right, reason }: { wrong: string; right: string; reason: string }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden text-xs">
       <div className="flex">
         <div className="flex-1 border-r border-slate-100 p-3">
-          <div className="mb-1 text-[10px] font-bold uppercase text-red-400">❌ Wrong</div>
+          <div className="mb-1 text-[10px] font-bold uppercase text-red-400">Wrong</div>
           <code className="text-[11px] text-red-600 break-all">{wrong}</code>
         </div>
         <div className="flex-1 p-3">
-          <div className="mb-1 text-[10px] font-bold uppercase text-emerald-400">✅ Right</div>
+          <div className="mb-1 text-[10px] font-bold uppercase text-emerald-400">Right</div>
           <code className="text-[11px] text-emerald-600 break-all">{right}</code>
         </div>
       </div>
@@ -728,7 +396,6 @@ function MistakeRow({ wrong, right, reason }: { wrong: string; right: string; re
   );
 }
 
-/* ── ID Reference group ───────────────────────────────────────────────────── */
 function IDGroup({ title, items }: { title: string; items: { subject: string; id: string; chapters: string[] }[] }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
@@ -743,16 +410,11 @@ function IDGroup({ title, items }: { title: string; items: { subject: string; id
               <code className="rounded bg-blue-50 px-2 py-0.5 text-[10px] font-mono font-medium text-blue-600">{item.id}</code>
             </div>
             <div className="flex flex-wrap gap-1">
-              {item.chapters.map((ch) => {
-                const id = ch.split(' (')[0];
-                const label = ch.includes('(') ? ch.split('(')[1]?.replace(')', '') : '';
-                return (
-                  <span key={id} className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1 text-[10px]">
-                    <code className="font-mono text-slate-600">{id}</code>
-                    {label && <span className="text-slate-400">{label}</span>}
-                  </span>
-                );
-              })}
+              {item.chapters.map((ch) => (
+                <span key={ch} className="inline-flex rounded-md bg-slate-50 px-2 py-1 text-[10px]">
+                  <code className="font-mono text-slate-600">{ch}</code>
+                </span>
+              ))}
             </div>
           </div>
         ))}

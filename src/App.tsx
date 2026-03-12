@@ -3,7 +3,9 @@ import {
   Menu,
   BookOpen,
   FileText,
+  FileDown,
   Microscope,
+  ScanLine,
   PenLine,
   Star,
   ArrowRight,
@@ -35,8 +37,10 @@ type View = 'home' | 'subject' | 'unit' | 'important' | 'search' | 'contribute' 
 
 const categoryIcons: Record<CategoryId, React.ReactNode> = {
   topics: <BookOpen size={15} />,
+  pyq_pdfs: <FileDown size={15} />,
   pyqs: <FileText size={15} />,
   histology: <Microscope size={15} />,
+  radiology: <ScanLine size={15} />,
   notes: <PenLine size={15} />,
 };
 
@@ -119,7 +123,7 @@ export function App() {
       return <ContributePage onBack={() => handleNavigate('home')} />;
     }
 
-    // Admin guide (hidden — double-click footer to access)
+    // Admin guide (hidden)
     if (view === 'admin') {
       return <ContentGuide onBack={() => handleNavigate('home')} />;
     }
@@ -136,7 +140,7 @@ export function App() {
       );
     }
 
-    // Subject view — all topics grouped by unit, with category filter tabs
+    // Subject view
     if (view === 'subject' && activeSubjectId) {
       const subject = subjects.find(s => s.id === activeSubjectId);
       if (!subject) return null;
@@ -159,7 +163,6 @@ export function App() {
 
       return (
         <div>
-          {/* Subject header */}
           <div className="mb-6">
             <div className="flex items-center gap-3">
               <span className="text-3xl">{subject.icon}</span>
@@ -232,7 +235,7 @@ export function App() {
       );
     }
 
-    // Unit view — single chapter's topics
+    // Unit view
     if (view === 'unit' && activeSubjectId && activeUnitId) {
       const subject = subjects.find(s => s.id === activeSubjectId);
       const unit = units.find(u => u.id === activeUnitId);
@@ -251,7 +254,6 @@ export function App() {
 
       return (
         <div>
-          {/* Header with breadcrumb */}
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-1.5 text-xs text-slate-400">
               <button
@@ -269,7 +271,6 @@ export function App() {
             </p>
           </div>
 
-          {/* Category filter tabs */}
           <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setSubjectCategoryFilter(null)}
@@ -303,7 +304,6 @@ export function App() {
             })}
           </div>
 
-          {/* Topics list */}
           <div className="space-y-1.5">
             {filteredTopics.map(topic => (
               <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />
@@ -319,7 +319,7 @@ export function App() {
       );
     }
 
-    // Important view
+    // Very Important view
     if (view === 'important') {
       const importantTopics = getImportantTopics(activeYear);
       const yearSubjects = getSubjectsByYear(activeYear);
@@ -331,7 +331,7 @@ export function App() {
               <Star size={18} className="fill-amber-400 text-amber-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900">High Yield Topics</h2>
+              <h2 className="text-xl font-bold text-slate-900">Very Important</h2>
               <p className="text-sm text-slate-400">
                 {importantTopics.length} must-review items — {yearLabel}
               </p>
@@ -461,12 +461,12 @@ function HomeView({
         </p>
       </div>
 
-      {/* Stats */}
+      {/* Stats — 4 main tiles */}
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { label: 'Topics', count: stats.topics, color: 'from-blue-500 to-blue-600', icon: <BookOpen size={16} /> },
+          { label: 'PYQ PDFs', count: stats.pyq_pdfs, color: 'from-rose-500 to-rose-600', icon: <FileDown size={16} /> },
           { label: 'PYQs', count: stats.pyqs, color: 'from-violet-500 to-violet-600', icon: <FileText size={16} /> },
-          { label: 'Histology', count: stats.histology, color: 'from-emerald-500 to-emerald-600', icon: <Microscope size={16} /> },
           { label: 'Notes', count: stats.notes, color: 'from-orange-500 to-orange-600', icon: <PenLine size={16} /> },
         ].map(stat => (
           <div key={stat.label} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
@@ -478,6 +478,34 @@ function HomeView({
           </div>
         ))}
       </div>
+
+      {/* Secondary stats row — Histology + Radiology */}
+      {(stats.histology > 0 || stats.radiology > 0) && (
+        <div className="mb-8 flex gap-3">
+          {stats.histology > 0 && (
+            <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white px-4 py-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+                <Microscope size={16} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-slate-900">{stats.histology}</p>
+                <p className="text-[11px] text-slate-400">Histology</p>
+              </div>
+            </div>
+          )}
+          {stats.radiology > 0 && (
+            <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white px-4 py-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 text-white">
+                <ScanLine size={16} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-slate-900">{stats.radiology}</p>
+                <p className="text-[11px] text-slate-400">Radiology</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Subjects */}
       <div className="mb-8">
@@ -509,13 +537,13 @@ function HomeView({
         </div>
       </div>
 
-      {/* High Yield */}
+      {/* Very Important */}
       {importantTopics.length > 0 && (
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-700">
               <Star size={13} className="mr-1 inline fill-amber-400 text-amber-400" />
-              High Yield
+              Very Important
             </h2>
             <button
               onClick={() => onNavigate('important')}

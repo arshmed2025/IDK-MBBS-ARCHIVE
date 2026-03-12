@@ -1,4 +1,4 @@
-import { Star, BookOpen, FileText, Microscope, PenLine, Eye } from 'lucide-react';
+import { Star, BookOpen, FileText, FileDown, Microscope, PenLine, Eye, ScanLine } from 'lucide-react';
 import type { Topic, CategoryId } from '../data/content';
 import { subjects } from '../data/content';
 import { cn } from '../utils/cn';
@@ -11,8 +11,10 @@ interface TopicItemProps {
 
 const categoryMeta: Record<CategoryId, { icon: React.ReactNode; label: string; color: string }> = {
   topics: { icon: <BookOpen size={11} />, label: 'Topic', color: 'bg-blue-50 text-blue-600' },
+  pyq_pdfs: { icon: <FileDown size={11} />, label: 'PYQ PDF', color: 'bg-rose-50 text-rose-600' },
   pyqs: { icon: <FileText size={11} />, label: 'PYQ', color: 'bg-violet-50 text-violet-600' },
   histology: { icon: <Microscope size={11} />, label: 'Histo', color: 'bg-emerald-50 text-emerald-600' },
+  radiology: { icon: <ScanLine size={11} />, label: 'Radio', color: 'bg-cyan-50 text-cyan-600' },
   notes: { icon: <PenLine size={11} />, label: 'Note', color: 'bg-orange-50 text-orange-600' },
 };
 

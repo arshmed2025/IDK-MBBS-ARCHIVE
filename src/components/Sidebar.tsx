@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               )}
             >
               <Star size={15} className={activeView === 'important' ? 'text-amber-500' : 'text-slate-400'} />
-              High Yield
+              Very Important
             </button>
             <button
               onClick={() => onNavigate('contribute')}
