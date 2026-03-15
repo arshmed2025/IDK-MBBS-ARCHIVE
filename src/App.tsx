@@ -47,9 +47,9 @@ const categoryIcons: Record<CategoryId, React.ReactNode> = {
 };
 
 const categoryColors: Record<CategoryId, string> = {
-  topics: 'from-blue-500 to-blue-600',
+  topics: 'from-sky-500 to-sky-600',
   pyq_pdfs: 'from-rose-500 to-rose-600',
-  pyqs: 'from-violet-500 to-violet-600',
+  pyqs: 'from-purple-500 to-purple-600',
   histology: 'from-emerald-500 to-emerald-600',
   radiology: 'from-cyan-500 to-cyan-600',
   notes: 'from-orange-500 to-orange-600',
@@ -64,7 +64,7 @@ const categoryBigIcons: Record<CategoryId, React.ReactNode> = {
   notes: <PenLine size={20} />,
 };
 
-// ─── Theme Helpers ────────────────────────────────────────────────────────────
+// ─── Theme ────────────────────────────────────────────────────────────────────
 
 function getInitialTheme(): ThemeMode {
   try {
@@ -134,9 +134,7 @@ export function App() {
 
   useEffect(() => setupCopyProtection(), []);
 
-  const handleThemeChange = useCallback((newTheme: ThemeMode) => {
-    setTheme(newTheme);
-  }, []);
+  const handleThemeChange = useCallback((t: ThemeMode) => setTheme(t), []);
 
   const handleNavigate = useCallback(
     (newView: string, subjectId?: string | null, category?: CategoryId | null, unitId?: string | null) => {
@@ -146,8 +144,7 @@ export function App() {
       setActiveUnitId(unitId ?? null);
       setSubjectCategoryFilter(null);
       setSidebarOpen(false);
-    },
-    []
+    }, []
   );
 
   const handleYearChange = useCallback((year: YearId) => {
@@ -160,26 +157,16 @@ export function App() {
     setSearchQuery('');
   }, []);
 
-  const handleSearchChange = useCallback(
-    (q: string) => {
-      setSearchQuery(q);
-      if (q.trim()) {
-        setView('search');
-      } else {
-        setView('home');
-      }
-    },
-    []
-  );
+  const handleSearchChange = useCallback((q: string) => {
+    setSearchQuery(q);
+    setView(q.trim() ? 'search' : 'home');
+  }, []);
 
-  const handleViewDetail = useCallback(
-    (topic: Topic) => {
-      prevViewRef.current = { view, subjectId: activeSubjectId, unitId: activeUnitId, category: activeCategory };
-      setSelectedTopic(topic);
-      setView('detail');
-    },
-    [view, activeSubjectId, activeUnitId, activeCategory]
-  );
+  const handleViewDetail = useCallback((topic: Topic) => {
+    prevViewRef.current = { view, subjectId: activeSubjectId, unitId: activeUnitId, category: activeCategory };
+    setSelectedTopic(topic);
+    setView('detail');
+  }, [view, activeSubjectId, activeUnitId, activeCategory]);
 
   const handleBackFromDetail = useCallback(() => {
     const prev = prevViewRef.current;
@@ -190,60 +177,45 @@ export function App() {
     setSelectedTopic(null);
   }, []);
 
-  const handleCategoryClick = useCallback(
-    (categoryId: CategoryId) => {
-      setActiveCategory(categoryId);
-      setView('category');
-      setSidebarOpen(false);
-    },
-    []
-  );
+  const handleCategoryClick = useCallback((categoryId: CategoryId) => {
+    setActiveCategory(categoryId);
+    setView('category');
+    setSidebarOpen(false);
+  }, []);
 
   const stats = useMemo(() => getStats(activeYear), [activeYear]);
-  const yearLabel = activeYear === 1 ? 'Year 1' : activeYear === 2 ? 'Year 2' : activeYear === 3 ? 'Year 3' : 'Year 4';
+  const yearLabel = `Year ${activeYear}`;
 
-  // ─── Render Content ─────────────────────────────────────────────────────────
+  // ─── Render ─────────────────────────────────────────────────────────────────
 
   const renderContent = () => {
     if (view === 'detail' && selectedTopic) {
       return <TopicDetail topic={selectedTopic} onBack={handleBackFromDetail} />;
     }
 
-    if (view === 'contribute') {
-      return <ContributePage onBack={() => handleNavigate('home')} />;
-    }
-
-    if (view === 'admin') {
-      return <ContentGuide onBack={() => handleNavigate('home')} />;
-    }
+    if (view === 'contribute') return <ContributePage onBack={() => handleNavigate('home')} />;
+    if (view === 'admin') return <ContentGuide onBack={() => handleNavigate('home')} />;
 
     // Category view
     if (view === 'category' && activeCategory) {
       const cat = categories.find(c => c.id === activeCategory);
       if (!cat) return null;
-
       const categoryTopics = getTopicsByYearAndCategory(activeYear, activeCategory);
       const yearSubjects = getSubjectsByYear(activeYear);
 
       return (
-        <div>
+        <div className="animate-fade-up">
           <div className="mb-6">
-            <button
-              onClick={() => handleNavigate('home')}
-              className="mb-3 flex items-center gap-1.5 text-xs text-stone-400 hover:text-stone-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors"
-            >
-              <ChevronRight size={10} className="rotate-180" />
-              Back to overview
+            <button onClick={() => handleNavigate('home')} className="mb-3 flex items-center gap-1.5 text-xs text-zinc-400 hover:text-violet-600 dark:text-zinc-500 dark:hover:text-violet-400 transition-colors cursor-pointer">
+              <ChevronRight size={10} className="rotate-180" /> Back to overview
             </button>
             <div className="flex items-center gap-3">
               <div className={cn('flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br text-white', categoryColors[activeCategory])}>
                 {categoryBigIcons[activeCategory]}
               </div>
               <div>
-                <h2 className="text-xl font-bold text-stone-900 dark:text-neutral-50">{cat.name}</h2>
-                <p className="text-sm text-stone-400 dark:text-neutral-500">
-                  {categoryTopics.length} items in {yearLabel}
-                </p>
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{cat.name}</h2>
+                <p className="text-sm text-zinc-400 dark:text-zinc-500">{categoryTopics.length} items in {yearLabel}</p>
               </div>
             </div>
           </div>
@@ -251,34 +223,28 @@ export function App() {
           {yearSubjects.map(subject => {
             const subjectTopics = categoryTopics.filter(t => t.subjectId === subject.id);
             if (subjectTopics.length === 0) return null;
-
             const subjectUnits = getUnitsBySubject(subject.id);
 
             return (
               <div key={subject.id} className="mb-8">
                 <div className="mb-3 flex items-center gap-2 px-1">
                   <span className="text-lg">{subject.icon}</span>
-                  <h3 className="text-sm font-semibold text-stone-700 dark:text-neutral-300">{subject.name}</h3>
-                  <span className="text-xs text-stone-400 dark:text-neutral-500">({subjectTopics.length})</span>
+                  <h3 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{subject.name}</h3>
+                  <span className="text-xs text-zinc-400 dark:text-zinc-500">({subjectTopics.length})</span>
                 </div>
 
                 {subjectUnits.map(unit => {
                   const unitTopics = subjectTopics.filter(t => t.unitId === unit.id);
                   if (unitTopics.length === 0) return null;
-
                   return (
                     <div key={unit.id} className="mb-4 ml-3">
                       <div className="mb-2 flex items-center gap-2 px-1">
-                        <div className="h-1.5 w-1.5 rounded-full bg-stone-300 dark:bg-neutral-600" />
-                        <h4 className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-neutral-500">
-                          {unit.name}
-                        </h4>
-                        <span className="text-[10px] text-stone-300 dark:text-neutral-600">({unitTopics.length})</span>
+                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                        <h4 className="text-xs font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">{unit.name}</h4>
+                        <span className="text-[10px] text-zinc-300 dark:text-zinc-600">({unitTopics.length})</span>
                       </div>
                       <div className="space-y-1.5">
-                        {unitTopics.map(topic => (
-                          <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />
-                        ))}
+                        {unitTopics.map(topic => <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />)}
                       </div>
                     </div>
                   );
@@ -289,7 +255,7 @@ export function App() {
 
           {categoryTopics.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-sm text-stone-400 dark:text-neutral-500">No {cat.name.toLowerCase()} added yet</p>
+              <p className="text-sm text-zinc-400 dark:text-zinc-500">No {cat.name.toLowerCase()} added yet</p>
             </div>
           )}
         </div>
@@ -298,61 +264,43 @@ export function App() {
 
     // Home
     if (view === 'home') {
-      return (
-        <HomeView
-          year={activeYear}
-          stats={stats}
-          onNavigate={handleNavigate}
-          onViewDetail={handleViewDetail}
-          onCategoryClick={handleCategoryClick}
-        />
-      );
+      return <HomeView year={activeYear} stats={stats} onNavigate={handleNavigate} onViewDetail={handleViewDetail} onCategoryClick={handleCategoryClick} />;
     }
 
     // Subject view
     if (view === 'subject' && activeSubjectId) {
       const subject = subjects.find(s => s.id === activeSubjectId);
       if (!subject) return null;
-
       const subjectUnits = getUnitsBySubject(activeSubjectId);
       const allSubjectTopics = getTopicsBySubject(activeSubjectId);
 
-      const getFilteredTopics = (unitId: string) => {
-        const unitTopics = getTopicsByUnit(unitId);
-        if (subjectCategoryFilter) {
-          return unitTopics.filter(t => t.category === subjectCategoryFilter);
-        }
-        return unitTopics;
+      const getFiltered = (unitId: string) => {
+        const ut = getTopicsByUnit(unitId);
+        return subjectCategoryFilter ? ut.filter(t => t.category === subjectCategoryFilter) : ut;
       };
 
-      const categoryCounts = categories.map(cat => ({
-        ...cat,
-        count: allSubjectTopics.filter(t => t.category === cat.id).length,
-      }));
+      const categoryCounts = categories.map(cat => ({ ...cat, count: allSubjectTopics.filter(t => t.category === cat.id).length }));
 
       return (
-        <div>
+        <div className="animate-fade-up">
           <div className="mb-6">
             <div className="flex items-center gap-3">
               <span className="text-3xl">{subject.icon}</span>
               <div>
-                <h2 className="text-xl font-bold text-stone-900 dark:text-neutral-50">{subject.name}</h2>
-                <p className="text-sm text-stone-400 dark:text-neutral-500">
-                  {allSubjectTopics.length} items across {subjectUnits.length} chapters
-                </p>
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{subject.name}</h2>
+                <p className="text-sm text-zinc-400 dark:text-zinc-500">{allSubjectTopics.length} items across {subjectUnits.length} chapters</p>
               </div>
             </div>
           </div>
 
-          {/* Category filter tabs */}
           <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setSubjectCategoryFilter(null)}
               className={cn(
-                'shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors',
+                'shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer',
                 !subjectCategoryFilter
-                  ? 'bg-stone-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
-                  : 'bg-stone-100 dark:bg-neutral-800 text-stone-500 dark:text-neutral-400 hover:bg-stone-200 dark:hover:bg-neutral-700'
+                  ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
               )}
             >
               All ({allSubjectTopics.length})
@@ -364,10 +312,10 @@ export function App() {
                   key={cat.id}
                   onClick={() => setSubjectCategoryFilter(cat.id)}
                   className={cn(
-                    'flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors',
+                    'flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer',
                     subjectCategoryFilter === cat.id
-                      ? 'bg-stone-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
-                      : 'bg-stone-100 dark:bg-neutral-800 text-stone-500 dark:text-neutral-400 hover:bg-stone-200 dark:hover:bg-neutral-700'
+                      ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                   )}
                 >
                   {categoryIcons[cat.id]}
@@ -378,24 +326,18 @@ export function App() {
             })}
           </div>
 
-          {/* Units with topics */}
           {subjectUnits.map(unit => {
-            const unitTopics = getFilteredTopics(unit.id);
+            const unitTopics = getFiltered(unit.id);
             if (unitTopics.length === 0) return null;
-
             return (
               <div key={unit.id} className="mb-6">
                 <div className="mb-2.5 flex items-center gap-2 px-1">
-                  <div className="h-1.5 w-1.5 rounded-full bg-stone-300 dark:bg-neutral-600" />
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-400 dark:text-neutral-500">
-                    {unit.name}
-                  </h3>
-                  <span className="text-[10px] text-stone-300 dark:text-neutral-600">({unitTopics.length})</span>
+                  <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">{unit.name}</h3>
+                  <span className="text-[10px] text-zinc-300 dark:text-zinc-600">({unitTopics.length})</span>
                 </div>
                 <div className="space-y-1.5">
-                  {unitTopics.map(topic => (
-                    <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />
-                  ))}
+                  {unitTopics.map(topic => <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />)}
                 </div>
               </div>
             );
@@ -409,45 +351,32 @@ export function App() {
       const subject = subjects.find(s => s.id === activeSubjectId);
       const unit = units.find(u => u.id === activeUnitId);
       if (!subject || !unit) return null;
-
       const unitTopics = getTopicsByUnit(activeUnitId);
-
-      const categoryCounts = categories.map(cat => ({
-        ...cat,
-        count: unitTopics.filter(t => t.category === cat.id).length,
-      }));
-
-      const filteredTopics = subjectCategoryFilter
-        ? unitTopics.filter(t => t.category === subjectCategoryFilter)
-        : unitTopics;
+      const categoryCounts = categories.map(cat => ({ ...cat, count: unitTopics.filter(t => t.category === cat.id).length }));
+      const filteredTopics = subjectCategoryFilter ? unitTopics.filter(t => t.category === subjectCategoryFilter) : unitTopics;
 
       return (
-        <div>
+        <div className="animate-fade-up">
           <div className="mb-6">
-            <div className="mb-2 flex items-center gap-1.5 text-xs text-stone-400 dark:text-neutral-500">
-              <button
-                onClick={() => handleNavigate('subject', activeSubjectId)}
-                className="hover:text-stone-600 dark:hover:text-neutral-300 transition-colors"
-              >
+            <div className="mb-2 flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
+              <button onClick={() => handleNavigate('subject', activeSubjectId)} className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer">
                 {subject.icon} {subject.name}
               </button>
               <ChevronRight size={10} />
-              <span className="text-stone-600 dark:text-neutral-300">{unit.name}</span>
+              <span className="text-zinc-600 dark:text-zinc-300">{unit.name}</span>
             </div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-neutral-50">{unit.name}</h2>
-            <p className="text-sm text-stone-400 dark:text-neutral-500">
-              {unitTopics.length} items in this chapter
-            </p>
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{unit.name}</h2>
+            <p className="text-sm text-zinc-400 dark:text-zinc-500">{unitTopics.length} items in this chapter</p>
           </div>
 
           <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setSubjectCategoryFilter(null)}
               className={cn(
-                'shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors',
+                'shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer',
                 !subjectCategoryFilter
-                  ? 'bg-stone-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
-                  : 'bg-stone-100 dark:bg-neutral-800 text-stone-500 dark:text-neutral-400 hover:bg-stone-200 dark:hover:bg-neutral-700'
+                  ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
               )}
             >
               All ({unitTopics.length})
@@ -459,10 +388,10 @@ export function App() {
                   key={cat.id}
                   onClick={() => setSubjectCategoryFilter(cat.id)}
                   className={cn(
-                    'flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors',
+                    'flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer',
                     subjectCategoryFilter === cat.id
-                      ? 'bg-stone-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
-                      : 'bg-stone-100 dark:bg-neutral-800 text-stone-500 dark:text-neutral-400 hover:bg-stone-200 dark:hover:bg-neutral-700'
+                      ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                   )}
                 >
                   {categoryIcons[cat.id]}
@@ -474,54 +403,47 @@ export function App() {
           </div>
 
           <div className="space-y-1.5">
-            {filteredTopics.map(topic => (
-              <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />
-            ))}
+            {filteredTopics.map(topic => <TopicItem key={topic.id} topic={topic} onViewDetail={handleViewDetail} />)}
           </div>
 
           {filteredTopics.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-sm text-stone-400 dark:text-neutral-500">No items in this category</p>
+              <p className="text-sm text-zinc-400 dark:text-zinc-500">No items in this category</p>
             </div>
           )}
         </div>
       );
     }
 
-    // Very Important view
+    // Very Important
     if (view === 'important') {
       const importantTopics = getImportantTopics(activeYear);
       const yearSubjects = getSubjectsByYear(activeYear);
 
       return (
-        <div>
+        <div className="animate-fade-up">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10">
               <Star size={18} className="fill-amber-400 text-amber-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-stone-900 dark:text-neutral-50">Very Important</h2>
-              <p className="text-sm text-stone-400 dark:text-neutral-500">
-                {importantTopics.length} must-review items — {yearLabel}
-              </p>
+              <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Very Important</h2>
+              <p className="text-sm text-zinc-400 dark:text-zinc-500">{importantTopics.length} must-review items — {yearLabel}</p>
             </div>
           </div>
 
           {yearSubjects.map(subject => {
-            const subjectImportant = importantTopics.filter(t => t.subjectId === subject.id);
-            if (subjectImportant.length === 0) return null;
-
+            const si = importantTopics.filter(t => t.subjectId === subject.id);
+            if (si.length === 0) return null;
             return (
               <div key={subject.id} className="mb-6">
                 <div className="mb-2.5 flex items-center gap-2 px-1">
                   <span className="text-lg">{subject.icon}</span>
-                  <h3 className="text-sm font-semibold text-stone-700 dark:text-neutral-300">{subject.name}</h3>
-                  <span className="text-xs text-stone-400 dark:text-neutral-500">({subjectImportant.length})</span>
+                  <h3 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{subject.name}</h3>
+                  <span className="text-xs text-zinc-400 dark:text-zinc-500">({si.length})</span>
                 </div>
                 <div className="space-y-1.5">
-                  {subjectImportant.map(topic => (
-                    <TopicItem key={topic.id} topic={topic} showSubject onViewDetail={handleViewDetail} />
-                  ))}
+                  {si.map(topic => <TopicItem key={topic.id} topic={topic} showSubject onViewDetail={handleViewDetail} />)}
                 </div>
               </div>
             );
@@ -530,32 +452,27 @@ export function App() {
       );
     }
 
-    // Search view
+    // Search
     if (view === 'search') {
       const results = searchTopics(searchQuery, activeYear);
-
       return (
-        <div>
+        <div className="animate-fade-up">
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-stone-900 dark:text-neutral-50">Search Results</h2>
-            <p className="text-sm text-stone-400 dark:text-neutral-500">
-              {results.length} result{results.length !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo; in {yearLabel}
-            </p>
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Search Results</h2>
+            <p className="text-sm text-zinc-400 dark:text-zinc-500">{results.length} result{results.length !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo; in {yearLabel}</p>
           </div>
 
           {results.length > 0 ? (
             <div className="space-y-1.5">
-              {results.map(topic => (
-                <TopicItem key={topic.id} topic={topic} showSubject onViewDetail={handleViewDetail} />
-              ))}
+              {results.map(topic => <TopicItem key={topic.id} topic={topic} showSubject onViewDetail={handleViewDetail} />)}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-100 dark:bg-neutral-800">
-                <Sparkles size={24} className="text-stone-300 dark:text-neutral-600" />
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800">
+                <Sparkles size={24} className="text-zinc-300 dark:text-zinc-600" />
               </div>
-              <p className="text-sm font-medium text-stone-400 dark:text-neutral-500">No topics found</p>
-              <p className="mt-1 text-xs text-stone-300 dark:text-neutral-600">Try a different search term</p>
+              <p className="text-sm font-medium text-zinc-400 dark:text-zinc-500">No topics found</p>
+              <p className="mt-1 text-xs text-zinc-300 dark:text-zinc-600">Try a different search term</p>
             </div>
           )}
         </div>
@@ -566,7 +483,7 @@ export function App() {
   };
 
   return (
-    <div className="flex h-screen bg-[#faf9f7] dark:bg-[#141414] font-[Inter,system-ui,sans-serif]">
+    <div className="flex h-screen bg-[#fafafa] dark:bg-[#18181b] font-[Inter,system-ui,sans-serif]">
       <Sidebar
         activeYear={activeYear}
         activeView={view}
@@ -584,15 +501,13 @@ export function App() {
       />
 
       <main className="flex-1 overflow-y-auto">
-        {/* Mobile top bar */}
-        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-stone-200/60 dark:border-neutral-800 bg-[#faf9f7]/80 dark:bg-[#141414]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-1.5 hover:bg-stone-100 dark:hover:bg-neutral-800"
-          >
-            <Menu size={20} className="text-stone-600 dark:text-neutral-400" />
+        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-zinc-200 dark:border-zinc-800 bg-[#fafafa]/80 dark:bg-[#18181b]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
+          <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
+            <Menu size={20} className="text-zinc-600 dark:text-zinc-400" />
           </button>
-          <h1 className="text-sm font-semibold text-stone-700 dark:text-neutral-200">MBBS {yearLabel}</h1>
+          <button onClick={() => { setView('home'); setSidebarOpen(false); }} className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer">
+            MBBS {yearLabel}
+          </button>
         </div>
 
         <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -606,11 +521,7 @@ export function App() {
 // ─── Home View ────────────────────────────────────────────────────────────────
 
 function HomeView({
-  year,
-  stats,
-  onNavigate,
-  onViewDetail,
-  onCategoryClick,
+  year, stats, onNavigate, onViewDetail, onCategoryClick,
 }: {
   year: YearId;
   stats: ReturnType<typeof getStats>;
@@ -620,52 +531,45 @@ function HomeView({
 }) {
   const yearSubjects = getSubjectsByYear(year);
   const importantTopics = getImportantTopics(year).slice(0, 6);
-  const yearLabel = year === 1 ? 'Year 1' : year === 2 ? 'Year 2' : year === 3 ? 'Year 3' : 'Year 4';
+  const yearLabel = `Year ${year}`;
 
-  const rawTiles: { id: CategoryId; label: string; count: number; color: string; icon: React.ReactNode }[] = [
-    { id: 'topics', label: 'Topics', count: stats.topics, color: 'from-blue-500 to-blue-600', icon: <BookOpen size={18} /> },
+  const tiles: { id: CategoryId; label: string; count: number; color: string; icon: React.ReactNode }[] = [
+    { id: 'topics', label: 'Topics', count: stats.topics, color: 'from-sky-500 to-sky-600', icon: <BookOpen size={18} /> },
     { id: 'pyq_pdfs', label: 'PYQ PDFs', count: stats.pyq_pdfs, color: 'from-rose-500 to-rose-600', icon: <FileDown size={18} /> },
-    { id: 'pyqs', label: 'PYQs', count: stats.pyqs, color: 'from-violet-500 to-violet-600', icon: <FileText size={18} /> },
+    { id: 'pyqs', label: 'PYQs', count: stats.pyqs, color: 'from-purple-500 to-purple-600', icon: <FileText size={18} /> },
     { id: 'notes', label: 'Notes', count: stats.notes, color: 'from-orange-500 to-orange-600', icon: <PenLine size={18} /> },
     { id: 'histology', label: 'Histology', count: stats.histology, color: 'from-emerald-500 to-emerald-600', icon: <Microscope size={18} /> },
     { id: 'radiology', label: 'Radiology', count: stats.radiology, color: 'from-cyan-500 to-cyan-600', icon: <ScanLine size={18} /> },
   ];
-  const allTiles = rawTiles.filter(t => t.count > 0);
+  const filteredTiles = tiles.filter(t => t.count > 0);
 
   return (
-    <div>
-      {/* Welcome */}
+    <div className="animate-fade-up">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-neutral-50 sm:text-3xl">
-          MBBS {yearLabel}
-        </h1>
-        <p className="mt-1 text-sm text-stone-400 dark:text-neutral-500">
-          {stats.total} resources organised across {yearSubjects.length} subjects
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">MBBS {yearLabel}</h1>
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-500">{stats.total} resources organised across {yearSubjects.length} subjects</p>
       </div>
 
-      {/* Stats tiles */}
-      {allTiles.length > 0 && (
+      {filteredTiles.length > 0 && (
         <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {allTiles.map(tile => (
+          {filteredTiles.map(tile => (
             <button
               key={tile.id}
               onClick={() => onCategoryClick(tile.id)}
-              className="group rounded-2xl border border-stone-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 text-left shadow-sm transition-all hover:border-stone-200 dark:hover:border-neutral-700 hover:shadow-md active:scale-[0.97]"
+              className="group rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 text-left shadow-sm transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-500/20 hover:shadow-md active:scale-[0.97] cursor-pointer"
             >
-              <div className={cn('mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br text-white transition-transform group-hover:scale-110', tile.color)}>
+              <div className={cn('mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br text-white transition-transform duration-200 group-hover:scale-110', tile.color)}>
                 {tile.icon}
               </div>
-              <p className="text-2xl font-bold text-stone-900 dark:text-neutral-50">{tile.count}</p>
-              <p className="text-xs text-stone-400 dark:text-neutral-500">{tile.label}</p>
+              <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">{tile.count}</p>
+              <p className="text-xs text-zinc-400 dark:text-zinc-500">{tile.label}</p>
             </button>
           ))}
         </div>
       )}
 
-      {/* Subjects */}
       <div className="mb-8">
-        <h2 className="mb-3 text-sm font-semibold text-stone-700 dark:text-neutral-300">Subjects</h2>
+        <h2 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">Subjects</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {yearSubjects.map(subject => {
             const count = getTopicsBySubject(subject.id).length;
@@ -674,45 +578,34 @@ function HomeView({
               <button
                 key={subject.id}
                 onClick={() => onNavigate('subject', subject.id)}
-                className="group flex items-center gap-4 rounded-2xl border border-stone-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 text-left transition-all hover:border-stone-200 dark:hover:border-neutral-700 hover:shadow-md active:scale-[0.98]"
+                className="group flex items-center gap-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 text-left transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-500/20 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
                 <span className="text-3xl">{subject.icon}</span>
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-stone-800 dark:text-neutral-200">{subject.name}</h3>
-                  <p className="mt-0.5 text-xs text-stone-400 dark:text-neutral-500">
-                    {count} topics · {unitCount} chapters
-                  </p>
+                  <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{subject.name}</h3>
+                  <p className="mt-0.5 text-xs text-zinc-400 dark:text-zinc-500">{count} topics · {unitCount} chapters</p>
                 </div>
-                <ArrowRight
-                  size={16}
-                  className="text-stone-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5 group-hover:text-stone-400 dark:group-hover:text-neutral-500"
-                />
+                <ArrowRight size={16} className="text-zinc-300 dark:text-zinc-600 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-violet-500 dark:group-hover:text-violet-400" />
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Very Important */}
       {importantTopics.length > 0 && (
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-stone-700 dark:text-neutral-300">
+            <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
               <Star size={13} className="mr-1 inline fill-amber-400 text-amber-400" />
               Very Important
             </h2>
-            <button
-              onClick={() => onNavigate('important')}
-              className="flex items-center gap-1 text-xs text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300"
-            >
+            <button onClick={() => onNavigate('important')} className="flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300 cursor-pointer">
               View all ({getImportantTopics(year).length})
               <ChevronRight size={12} />
             </button>
           </div>
           <div className="space-y-1.5">
-            {importantTopics.map(topic => (
-              <TopicItem key={topic.id} topic={topic} showSubject onViewDetail={onViewDetail} />
-            ))}
+            {importantTopics.map(topic => <TopicItem key={topic.id} topic={topic} showSubject onViewDetail={onViewDetail} />)}
           </div>
         </div>
       )}

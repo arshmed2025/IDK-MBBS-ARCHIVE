@@ -1,124 +1,126 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Printer, Star, ZoomIn, X } from 'lucide-react';
-import { type Topic, subjects, units, categories } from '../data/index';
+import { type Topic, subjects, units } from '../data/index';
 import { MarkdownRenderer } from './MarkdownRenderer';
-
+import { cn } from '../utils/cn';
 
 interface TopicDetailProps {
   topic: Topic;
   onBack: () => void;
 }
 
+const catLabels: Record<string, string> = {
+  topics: 'T',
+  pyq_pdfs: 'PYQ PDFs',
+  pyqs: 'PYQs',
+  notes: 'N',
+  histology: 'H',
+  radiology: 'R',
+};
+
+const catColors: Record<string, string> = {
+  topics: 'bg-sky-100 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400',
+  pyq_pdfs: 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400',
+  pyqs: 'bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400',
+  histology: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+  radiology: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400',
+  notes: 'bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400',
+};
+
 export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const subject = subjects.find(s => s.id === topic.subjectId);
   const unit = units.find(u => u.id === topic.unitId);
-  const cat = categories.find(c => c.id === topic.category);
 
   const handlePrint = () => window.print();
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Top bar */}
-      <div className="mb-6 flex items-center justify-between no-print">
+      <div className="flex items-center justify-between mb-6 no-print">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-stone-500 dark:text-neutral-400 transition-colors hover:bg-stone-100 dark:hover:bg-neutral-800 hover:text-stone-700 dark:hover:text-neutral-200"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-zinc-500 dark:text-zinc-400 transition-all duration-200 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 cursor-pointer"
         >
           <ArrowLeft size={15} />
           Back
         </button>
-
-        {topic.content && (
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-1.5 rounded-lg bg-stone-100 dark:bg-neutral-800 px-3 py-1.5 text-sm font-medium text-stone-600 dark:text-neutral-300 transition-colors hover:bg-stone-200 dark:hover:bg-neutral-700"
-          >
-            <Printer size={14} />
-            Save as PDF
-          </button>
-        )}
+        <button
+          onClick={handlePrint}
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-zinc-500 dark:text-zinc-400 transition-all duration-200 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 cursor-pointer"
+        >
+          <Printer size={15} />
+          Save as PDF
+        </button>
       </div>
 
-      {/* Printable area */}
-      <div id="print-area">
+      {/* Content Card */}
+      <div id="print-area" className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm overflow-hidden">
         {/* Print header */}
-        <div className="print-only border-b border-stone-200 pb-3 mb-4">
-          <p className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">MBBS Resources</p>
+        <div className="print-only hidden px-6 py-3 border-b border-zinc-200 text-xs text-zinc-500">
+          MBBS RESOURCES
         </div>
 
-        {/* Breadcrumb */}
-        <div className="mb-3 flex items-center gap-1.5 text-xs text-stone-400 dark:text-neutral-500">
-          {subject && <span>{subject.icon} {subject.name}</span>}
-          {unit && (
-            <>
-              <span className="text-stone-300 dark:text-neutral-600">›</span>
-              <span>{unit.name}</span>
-            </>
+        {/* Header */}
+        <div className="px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500 mb-3">
+            <span>{subject?.icon}</span>
+            <span>{subject?.name}</span>
+            <span>›</span>
+            <span>{unit?.name}</span>
+          </div>
+
+          <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+            {topic.title}
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-medium', catColors[topic.category])}>
+              {catLabels[topic.category] || topic.category}
+            </span>
+            {topic.important && (
+              <span className="flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                <Star size={10} className="fill-amber-400 text-amber-400" />
+                Very Important
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5">
+          {topic.content ? (
+            <MarkdownRenderer
+              content={topic.content}
+              onImageClick={(src) => setZoomedImage(src)}
+            />
+          ) : (
+            <p className="text-sm text-zinc-400 dark:text-zinc-500 italic">No notes added yet.</p>
+          )}
+
+          {/* Tip for visual content */}
+          {(topic.category === 'histology' || topic.category === 'radiology') && topic.content && (
+            <div className="mt-5 flex items-center gap-2 rounded-lg bg-violet-50 dark:bg-violet-500/10 px-4 py-2.5 text-xs text-violet-600 dark:text-violet-400 no-print">
+              <ZoomIn size={14} />
+              Click any image to zoom in
+            </div>
           )}
         </div>
 
-        {/* Title */}
-        <div className="mb-6">
-          <div className="flex items-start gap-3">
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-neutral-50">
-                {topic.title}
-              </h1>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                {cat && (
-                  <span className="rounded-full bg-stone-100 dark:bg-neutral-800 px-2.5 py-0.5 text-[11px] font-medium text-stone-500 dark:text-neutral-400">
-                    {cat.icon} {cat.name}
-                  </span>
-                )}
-                {topic.important && (
-                  <span className="flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-900/20 px-2.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-400">
-                    <Star size={10} className="fill-amber-400 text-amber-400" />
-                    Very Important
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        {topic.content ? (
-          <div className="topic-content">
-            <div className="rounded-2xl border border-stone-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 sm:p-7">
-              <MarkdownRenderer
-                content={topic.content}
-                onImageClick={(src) => setZoomedImage(src)}
-              />
-            </div>
-
-            {/* Tip for histology/radiology */}
-            {(topic.category === 'histology' || topic.category === 'radiology') && (
-              <p className="mt-3 text-center text-xs text-stone-400 dark:text-neutral-500 no-print">
-                <ZoomIn size={12} className="mr-1 inline" />
-                Click any image to zoom in
-              </p>
-            )}
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-stone-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-8 text-center">
-            <p className="text-sm text-stone-400 dark:text-neutral-500">No notes added yet</p>
-          </div>
-        )}
-
-        {/* Credits — below content */}
+        {/* Credits */}
         {topic.content && (topic.by || topic.editor) && (
-          <div className="credits-section mt-5 border-t border-stone-100 dark:border-neutral-800 pt-4">
-            <div className="flex flex-wrap items-center gap-4 text-xs text-stone-400 dark:text-neutral-500">
+          <div className="px-6 pb-5">
+            <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-zinc-400 dark:text-zinc-500">
               {topic.by && (
                 <span>
-                  <span className="font-medium text-stone-500 dark:text-neutral-400">Contributor</span>{' '}
+                  <span className="font-medium text-zinc-500 dark:text-zinc-400">Contributor</span>{' '}
                   {topic.by}
                 </span>
               )}
               {topic.editor && (
                 <span>
-                  <span className="font-medium text-stone-500 dark:text-neutral-400">Editor</span>{' '}
+                  <span className="font-medium text-zinc-500 dark:text-zinc-400">Editor</span>{' '}
                   {topic.editor}
                 </span>
               )}
@@ -127,24 +129,19 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
         )}
 
         {/* Print footer */}
-        <div className="print-only border-t border-stone-200 pt-3 mt-8">
-          <p className="text-[9px] text-stone-400 text-center">
-            MBBS Resources
-            {subject ? ` · ${subject.name}` : ''}
-            {unit ? ` · ${unit.name}` : ''}
-            {' · For personal study use only'}
-          </p>
+        <div className="print-only hidden px-6 py-3 border-t border-zinc-200 text-[10px] text-zinc-400 text-center">
+          MBBS Resources · {subject?.name} · {unit?.name} · For personal study use only
         </div>
       </div>
 
-      {/* Image zoom modal */}
+      {/* Zoomed image overlay */}
       {zoomedImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 no-print"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 no-print"
           onClick={() => setZoomedImage(null)}
         >
           <button
-            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+            className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors cursor-pointer"
             onClick={() => setZoomedImage(null)}
           >
             <X size={20} />
@@ -152,7 +149,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
           <img
             src={zoomedImage}
             alt="Zoomed"
-            className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
+            className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain"
             draggable={false}
           />
         </div>

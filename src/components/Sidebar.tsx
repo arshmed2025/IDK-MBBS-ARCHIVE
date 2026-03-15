@@ -59,9 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [expandedSubject, setExpandedSubject] = useState<string | null>(null);
 
   useEffect(() => {
-    if (activeSubjectId) {
-      setExpandedSubject(activeSubjectId);
-    }
+    if (activeSubjectId) setExpandedSubject(activeSubjectId);
   }, [activeSubjectId]);
 
   const handleSubjectClick = (subjectId: string) => {
@@ -82,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm lg:hidden"
           onClick={onToggle}
         />
       )}
@@ -90,50 +88,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={cn(
           'fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r transition-transform duration-300 lg:static lg:translate-x-0',
-          'border-stone-200/80 bg-stone-50/95 backdrop-blur-xl',
-          'dark:border-neutral-800 dark:bg-neutral-900/95',
+          'border-zinc-200 bg-zinc-50/95 backdrop-blur-xl',
+          'dark:border-zinc-800 dark:bg-zinc-900/95',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Header */}
-        <div className="flex items-center gap-2.5 border-b border-stone-200/60 dark:border-neutral-800 px-5 py-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600">
+        <div className="flex items-center gap-2.5 border-b border-zinc-200 dark:border-zinc-800 px-5 py-4">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 shadow-sm">
             <BookOpen size={14} className="text-white" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold text-stone-900 dark:text-neutral-100">MBBS Resources</h1>
-            <p className="text-[10px] text-stone-400 dark:text-neutral-500">Organised study library</p>
+            <h1 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">MBBS Resources</h1>
+            <p className="text-[10px] text-zinc-400 dark:text-zinc-500">Organised study library</p>
           </div>
         </div>
 
         {/* Year Selector */}
-        <div className="border-b border-stone-200/60 dark:border-neutral-800 px-3 py-3">
+        <div className="border-b border-zinc-200 dark:border-zinc-800 px-3 py-3">
           <div className="relative">
             <select
               value={activeYear}
               onChange={(e) => onYearChange(Number(e.target.value) as YearId)}
-              className="w-full appearance-none rounded-lg bg-white dark:bg-neutral-800 px-3 py-2 pr-8 text-sm font-medium text-stone-800 dark:text-neutral-200 shadow-sm ring-1 ring-stone-200/80 dark:ring-neutral-700 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              className="w-full appearance-none rounded-lg bg-white dark:bg-zinc-800 px-3 py-2 pr-8 text-sm font-medium text-zinc-800 dark:text-zinc-200 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500/40"
             >
               {years.map((y) => (
-                <option key={y.id} value={y.id}>
-                  {y.label} — {y.subtitle}
-                </option>
+                <option key={y.id} value={y.id}>{y.label} — {y.subtitle}</option>
               ))}
             </select>
-            <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-stone-400" />
+            <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400" />
           </div>
         </div>
 
         {/* Search */}
         <div className="px-3 pt-3">
-          <div className="flex items-center gap-2 rounded-lg bg-stone-200/40 dark:bg-neutral-800 px-3 py-2">
-            <Search size={14} className="text-stone-400 dark:text-neutral-500" />
+          <div className="flex items-center gap-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 px-3 py-2">
+            <Search size={14} className="text-zinc-400 dark:text-zinc-500" />
             <input
               type="text"
               placeholder="Search topics…"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full bg-transparent text-sm text-stone-700 dark:text-neutral-200 placeholder:text-stone-400 dark:placeholder:text-neutral-500 focus:outline-none"
+              className="w-full bg-transparent text-sm text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none"
             />
           </div>
         </div>
@@ -142,50 +138,50 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <nav className="flex-1 overflow-y-auto px-3 py-3">
           {/* Quick Access */}
           <div className="mb-4">
-            <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-stone-400 dark:text-neutral-500">
+            <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
               Quick Access
             </p>
             <button
               onClick={() => onNavigate('home')}
               className={cn(
-                'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors',
+                'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-all duration-200',
                 activeView === 'home'
-                  ? 'bg-amber-50 dark:bg-amber-900/20 font-medium text-amber-700 dark:text-amber-400'
-                  : 'text-stone-600 dark:text-neutral-400 hover:bg-stone-100 dark:hover:bg-neutral-800'
+                  ? 'bg-violet-50 dark:bg-violet-500/10 font-medium text-violet-700 dark:text-violet-400'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
-              <Home size={15} className={activeView === 'home' ? 'text-amber-600 dark:text-amber-400' : 'text-stone-400 dark:text-neutral-500'} />
+              <Home size={15} className={activeView === 'home' ? 'text-violet-600 dark:text-violet-400' : 'text-zinc-400 dark:text-zinc-500'} />
               Overview
             </button>
             <button
               onClick={() => onNavigate('important')}
               className={cn(
-                'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors',
+                'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-all duration-200',
                 activeView === 'important'
-                  ? 'bg-amber-50 dark:bg-amber-900/20 font-medium text-amber-700 dark:text-amber-400'
-                  : 'text-stone-600 dark:text-neutral-400 hover:bg-stone-100 dark:hover:bg-neutral-800'
+                  ? 'bg-violet-50 dark:bg-violet-500/10 font-medium text-violet-700 dark:text-violet-400'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
-              <Star size={15} className={activeView === 'important' ? 'text-amber-500 dark:text-amber-400' : 'text-stone-400 dark:text-neutral-500'} />
+              <Star size={15} className={activeView === 'important' ? 'text-amber-500' : 'text-zinc-400 dark:text-zinc-500'} />
               Very Important
             </button>
             <button
               onClick={() => onNavigate('contribute')}
               className={cn(
-                'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors',
+                'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-all duration-200',
                 activeView === 'contribute'
-                  ? 'bg-emerald-50 dark:bg-emerald-900/20 font-medium text-emerald-700 dark:text-emerald-400'
-                  : 'text-stone-600 dark:text-neutral-400 hover:bg-stone-100 dark:hover:bg-neutral-800'
+                  ? 'bg-violet-50 dark:bg-violet-500/10 font-medium text-violet-700 dark:text-violet-400'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
-              <Mail size={15} className={activeView === 'contribute' ? 'text-emerald-500 dark:text-emerald-400' : 'text-stone-400 dark:text-neutral-500'} />
+              <Mail size={15} className={activeView === 'contribute' ? 'text-violet-500 dark:text-violet-400' : 'text-zinc-400 dark:text-zinc-500'} />
               Contribute
             </button>
           </div>
 
-          {/* Subjects with chapters */}
+          {/* Subjects */}
           <div className="mb-2">
-            <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-stone-400 dark:text-neutral-500">
+            <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
               Subjects
             </p>
 
@@ -197,42 +193,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               return (
                 <div key={subject.id} className="mb-0.5">
-                  {/* Subject Header Row */}
                   <div className="flex items-center">
                     <button
                       onClick={(e) => handleToggleExpand(e, subject.id)}
-                      className="flex h-7 w-6 shrink-0 items-center justify-center rounded text-stone-400 hover:text-stone-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+                      className="flex h-7 w-6 shrink-0 items-center justify-center rounded text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
                     >
                       <ChevronRight
                         size={12}
-                        className={cn(
-                          'transition-transform duration-200',
-                          isExpanded && 'rotate-90'
-                        )}
+                        className={cn('transition-transform duration-200', isExpanded && 'rotate-90')}
                       />
                     </button>
 
                     <button
                       onClick={() => handleSubjectClick(subject.id)}
                       className={cn(
-                        'flex flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors',
-                        isActiveSubject && (activeView === 'subject') && !activeUnitId && !activeCategory
-                          ? 'bg-white dark:bg-neutral-800 font-medium text-stone-900 dark:text-neutral-100 shadow-sm ring-1 ring-stone-200/60 dark:ring-neutral-700'
+                        'flex flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-all duration-200',
+                        isActiveSubject && activeView === 'subject' && !activeUnitId && !activeCategory
+                          ? 'bg-white dark:bg-zinc-800 font-medium text-zinc-900 dark:text-zinc-100 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-700'
                           : isActiveSubject
-                          ? 'font-medium text-stone-800 dark:text-neutral-200'
-                          : 'text-stone-600 dark:text-neutral-400 hover:bg-stone-100 dark:hover:bg-neutral-800'
+                          ? 'font-medium text-zinc-800 dark:text-zinc-200'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                       )}
                     >
                       <span className="text-base">{subject.icon}</span>
                       <span className="flex-1 truncate">{subject.name}</span>
-                      <span className="text-[10px] text-stone-300 dark:text-neutral-600">{totalTopics}</span>
+                      <span className="text-[10px] text-zinc-300 dark:text-zinc-600">{totalTopics}</span>
                     </button>
                   </div>
 
-                  {/* Expanded: Chapters only */}
                   {isExpanded && (
-                    <div className="ml-6 border-l border-stone-200/70 dark:border-neutral-700/70 pl-2 pb-1 mt-0.5">
-                      <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-stone-300 dark:text-neutral-600">
+                    <div className="ml-6 border-l border-zinc-200 dark:border-zinc-700 pl-2 pb-1 mt-0.5 animate-fade-up">
+                      <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-300 dark:text-zinc-600">
                         Chapters
                       </p>
                       {subjectUnits.map((unit) => {
@@ -244,20 +235,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             key={unit.id}
                             onClick={() => onNavigate('unit', subject.id, null, unit.id)}
                             className={cn(
-                              'flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs transition-colors',
+                              'flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs transition-all duration-200',
                               isActiveUnit
-                                ? 'bg-white dark:bg-neutral-800 font-medium text-stone-800 dark:text-neutral-100 shadow-sm ring-1 ring-stone-200/60 dark:ring-neutral-700'
-                                : 'text-stone-500 dark:text-neutral-400 hover:bg-stone-100 dark:hover:bg-neutral-800 hover:text-stone-700 dark:hover:text-neutral-300'
+                                ? 'bg-white dark:bg-zinc-800 font-medium text-zinc-800 dark:text-zinc-100 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-700'
+                                : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-300'
                             )}
                           >
-                            <div
-                              className={cn(
-                                'h-1.5 w-1.5 shrink-0 rounded-full',
-                                isActiveUnit ? 'bg-amber-400' : 'bg-stone-300 dark:bg-neutral-600'
-                              )}
-                            />
+                            <div className={cn(
+                              'h-1.5 w-1.5 shrink-0 rounded-full',
+                              isActiveUnit ? 'bg-violet-500' : 'bg-zinc-300 dark:bg-zinc-600'
+                            )} />
                             <span className="flex-1 truncate text-left">{unit.name}</span>
-                            <span className="text-[10px] text-stone-300 dark:text-neutral-600">{unitTopicCount}</span>
+                            <span className="text-[10px] text-zinc-300 dark:text-zinc-600">{unitTopicCount}</span>
                           </button>
                         );
                       })}
@@ -269,55 +258,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
 
-        {/* Footer with theme toggle */}
-        <div className="border-t border-stone-200/60 dark:border-neutral-800 px-5 py-3">
-          {/* Theme Toggle */}
+        {/* Footer */}
+        <div className="border-t border-zinc-200 dark:border-zinc-800 px-5 py-3">
           <div className="mb-3 flex items-center justify-center">
-            <div className="inline-flex items-center rounded-lg bg-stone-200/50 dark:bg-neutral-800 p-0.5">
-              <button
-                onClick={() => onThemeChange('light')}
-                className={cn(
-                  'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all',
-                  theme === 'light'
-                    ? 'bg-white dark:bg-neutral-700 text-amber-600 dark:text-amber-400 shadow-sm'
-                    : 'text-stone-400 dark:text-neutral-500 hover:text-stone-600 dark:hover:text-neutral-300'
-                )}
-                title="Light mode"
-              >
-                <Sun size={12} />
-              </button>
-              <button
-                onClick={() => onThemeChange('system')}
-                className={cn(
-                  'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all',
-                  theme === 'system'
-                    ? 'bg-white dark:bg-neutral-700 text-amber-600 dark:text-amber-400 shadow-sm'
-                    : 'text-stone-400 dark:text-neutral-500 hover:text-stone-600 dark:hover:text-neutral-300'
-                )}
-                title="System theme"
-              >
-                <Monitor size={12} />
-              </button>
-              <button
-                onClick={() => onThemeChange('dark')}
-                className={cn(
-                  'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all',
-                  theme === 'dark'
-                    ? 'bg-white dark:bg-neutral-700 text-amber-600 dark:text-amber-400 shadow-sm'
-                    : 'text-stone-400 dark:text-neutral-500 hover:text-stone-600 dark:hover:text-neutral-300'
-                )}
-                title="Dark mode"
-              >
-                <Moon size={12} />
-              </button>
+            <div className="inline-flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-800 p-0.5">
+              {([
+                { mode: 'light' as ThemeMode, icon: Sun, label: 'Light' },
+                { mode: 'system' as ThemeMode, icon: Monitor, label: 'System' },
+                { mode: 'dark' as ThemeMode, icon: Moon, label: 'Dark' },
+              ]).map(({ mode, icon: Icon, label }) => (
+                <button
+                  key={mode}
+                  onClick={() => onThemeChange(mode)}
+                  className={cn(
+                    'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-200',
+                    theme === mode
+                      ? 'bg-white dark:bg-zinc-700 text-violet-600 dark:text-violet-400 shadow-sm'
+                      : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'
+                  )}
+                  title={label}
+                >
+                  <Icon size={12} />
+                </button>
+              ))}
             </div>
           </div>
 
           <p
-            className="text-[10px] text-stone-400 dark:text-neutral-600 select-none cursor-default text-center"
+            className="text-[10px] text-zinc-400 dark:text-zinc-600 select-none cursor-default text-center"
             onDoubleClick={() => onNavigate('admin')}
           >
-            Built for focused study · No distractions
+            Built for focused study
           </p>
         </div>
       </aside>
