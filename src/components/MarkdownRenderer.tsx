@@ -5,317 +5,260 @@ interface MarkdownRendererProps {
   onImageClick?: (src: string) => void;
 }
 
-export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
-  content,
-  onImageClick,
-}) => {
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, onImageClick }) => {
   const lines = content.split('\n');
   const elements: React.ReactNode[] = [];
   let i = 0;
-  let key = 0;
-
-  const parseInline = (text: string): React.ReactNode[] => {
-    const parts: React.ReactNode[] = [];
-    const regex =
-      /(!?\[([^\]]*)\]\(([^)]+)\)|\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)/g;
-    let lastIndex = 0;
-    let match;
-
-    while ((match = regex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(text.slice(lastIndex, match.index));
-      }
-
-      // Image: ![alt](src)
-      if (match[0].startsWith('![')) {
-        const alt = match[2] || '';
-        const src = match[3] || '';
-        parts.push(
-          <figure key={`img-${match.index}`} className="my-4">
-            <div className="img-protected relative overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-              <img
-                src={src}
-                alt={alt}
-                loading="lazy"
-                className={`w-full ${
-                  onImageClick
-                    ? 'cursor-zoom-in transition-transform hover:scale-[1.01]'
-                    : ''
-                }`}
-                onClick={() => onImageClick?.(src)}
-              />
-            </div>
-            {alt && (
-              <figcaption className="mt-2 text-center text-xs text-slate-400">
-                {alt}
-              </figcaption>
-            )}
-          </figure>
-        );
-      }
-      // Link: [text](url)
-      else if (match[0].startsWith('[')) {
-        const linkText = match[2] || '';
-        const href = match[3] || '';
-        parts.push(
-          <a
-            key={`a-${match.index}`}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline decoration-blue-200 underline-offset-2 hover:decoration-blue-400"
-          >
-            {linkText}
-          </a>
-        );
-      }
-      // Bold italic
-      else if (match[4]) {
-        parts.push(
-          <strong
-            key={`bi-${match.index}`}
-            className="font-semibold italic text-slate-900"
-          >
-            {match[4]}
-          </strong>
-        );
-      }
-      // Bold
-      else if (match[5]) {
-        parts.push(
-          <strong
-            key={`b-${match.index}`}
-            className="font-semibold text-slate-900"
-          >
-            {match[5]}
-          </strong>
-        );
-      }
-      // Italic
-      else if (match[6]) {
-        parts.push(
-          <em key={`i-${match.index}`} className="italic text-slate-700">
-            {match[6]}
-          </em>
-        );
-      }
-      // Code
-      else if (match[7]) {
-        parts.push(
-          <code
-            key={`c-${match.index}`}
-            className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-rose-600"
-          >
-            {match[7]}
-          </code>
-        );
-      }
-
-      lastIndex = match.index + match[0].length;
-    }
-
-    if (lastIndex < text.length) {
-      parts.push(text.slice(lastIndex));
-    }
-    return parts.length > 0 ? parts : [text];
-  };
-
-  const isStandaloneImage = (line: string): boolean => {
-    return /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(line);
-  };
 
   while (i < lines.length) {
     const line = lines[i];
+    const trimmed = line.trim();
 
-    if (line.trim() === '') {
+    // Skip empty lines
+    if (!trimmed) {
       i++;
       continue;
     }
 
-    // H1
-    if (line.startsWith('# ')) {
+    // Headings
+    if (trimmed.startsWith('### ')) {
       elements.push(
-        <h1
-          key={key++}
-          className="mb-1 text-2xl font-bold tracking-tight text-slate-900"
-        >
-          {line.slice(2)}
+        <h3 key={i} className="mt-5 mb-2 text-base font-semibold text-stone-800 dark:text-neutral-100">
+          {renderInline(trimmed.slice(4))}
+        </h3>
+      );
+      i++;
+      continue;
+    }
+    if (trimmed.startsWith('## ')) {
+      elements.push(
+        <h2 key={i} className="mt-6 mb-2 text-lg font-bold text-stone-900 dark:text-neutral-50">
+          {renderInline(trimmed.slice(3))}
+        </h2>
+      );
+      i++;
+      continue;
+    }
+    if (trimmed.startsWith('# ')) {
+      elements.push(
+        <h1 key={i} className="mt-6 mb-3 text-xl font-bold text-stone-900 dark:text-neutral-50">
+          {renderInline(trimmed.slice(2))}
         </h1>
       );
       i++;
       continue;
     }
 
-    // H2
-    if (line.startsWith('## ')) {
-      elements.push(
-        <h2
-          key={key++}
-          className="mb-1 mt-6 text-lg font-semibold text-slate-800"
-        >
-          {line.slice(3)}
-        </h2>
-      );
-      i++;
-      continue;
-    }
-
-    // H3
-    if (line.startsWith('### ')) {
-      elements.push(
-        <h3
-          key={key++}
-          className="mb-1 mt-4 text-base font-semibold text-slate-700"
-        >
-          {line.slice(4)}
-        </h3>
-      );
-      i++;
-      continue;
-    }
-
     // Horizontal rule
-    if (line.trim() === '---' || line.trim() === '***') {
-      elements.push(<hr key={key++} className="my-4 border-slate-200" />);
+    if (trimmed === '---' || trimmed === '***') {
+      elements.push(<hr key={i} className="my-4 border-stone-200 dark:border-neutral-700" />);
       i++;
       continue;
     }
 
-    // Standalone image line
-    if (isStandaloneImage(line)) {
-      elements.push(<div key={key++}>{parseInline(line.trim())}</div>);
+    // Image
+    const imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imgMatch) {
+      const alt = imgMatch[1];
+      const src = imgMatch[2];
+      elements.push(
+        <figure key={i} className="my-4 print-img">
+          <div
+            className="relative cursor-zoom-in overflow-hidden rounded-xl border border-stone-200 dark:border-neutral-700 bg-stone-50 dark:bg-neutral-800"
+            onClick={() => onImageClick?.(src)}
+          >
+            <img
+              src={src}
+              alt={alt}
+              className="w-full object-contain"
+              loading="lazy"
+              draggable={false}
+              onDragStart={(e) => e.preventDefault()}
+            />
+          </div>
+          {alt && (
+            <figcaption className="mt-1.5 text-center text-xs text-stone-400 dark:text-neutral-500">
+              {alt}
+            </figcaption>
+          )}
+        </figure>
+      );
       i++;
       continue;
     }
 
     // Table
-    if (
-      line.includes('|') &&
-      i + 1 < lines.length &&
-      lines[i + 1].includes('---')
-    ) {
-      const tableRows: string[][] = [];
-      let j = i;
-      while (j < lines.length && lines[j].includes('|')) {
-        const cells = lines[j]
-          .split('|')
-          .map((c) => c.trim())
-          .filter((c) => c !== '' && !c.match(/^-+$/));
-        if (cells.length > 0 && !lines[j].match(/^\|?\s*-+/)) {
-          tableRows.push(cells);
-        }
-        j++;
-      }
-      if (tableRows.length > 0) {
-        elements.push(
-          <div key={key++} className="my-3 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr>
-                  {tableRows[0].map((cell, ci) => (
-                    <th
-                      key={ci}
-                      className="border-b border-slate-200 px-3 py-2 text-left font-semibold text-slate-700"
-                    >
-                      {parseInline(cell)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {tableRows.slice(1).map((row, ri) => (
-                  <tr
-                    key={ri}
-                    className={ri % 2 === 0 ? 'bg-slate-50/50' : ''}
-                  >
-                    {row.map((cell, ci) => (
-                      <td
-                        key={ci}
-                        className="border-b border-slate-100 px-3 py-2 text-slate-600"
-                      >
-                        {parseInline(cell)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        );
-      }
-      i = j;
-      continue;
-    }
-
-    // Ordered list
-    if (/^\d+\.\s/.test(line.trim())) {
-      const items: React.ReactNode[] = [];
-      while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
-        items.push(
-          <li key={key++} className="text-slate-600">
-            {parseInline(lines[i].trim().replace(/^\d+\.\s/, ''))}
-          </li>
-        );
+    if (trimmed.includes('|') && trimmed.startsWith('|')) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        tableLines.push(lines[i].trim());
         i++;
       }
-      elements.push(
-        <ol key={key++} className="my-2 ml-5 list-decimal space-y-1 text-sm">
-          {items}
-        </ol>
-      );
-      continue;
-    }
-
-    // Unordered list
-    if (line.trim().startsWith('- ')) {
-      const items: React.ReactNode[] = [];
-      while (i < lines.length && lines[i].trim().startsWith('- ')) {
-        items.push(
-          <li key={key++} className="text-slate-600">
-            {parseInline(lines[i].trim().slice(2))}
-          </li>
-        );
-        i++;
-      }
-      elements.push(
-        <ul key={key++} className="my-2 ml-5 list-disc space-y-1 text-sm">
-          {items}
-        </ul>
-      );
+      elements.push(renderTable(tableLines, elements.length));
       continue;
     }
 
     // Blockquote
-    if (line.trim().startsWith('> ')) {
+    if (trimmed.startsWith('> ')) {
       const quoteLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith('> ')) {
         quoteLines.push(lines[i].trim().slice(2));
         i++;
       }
       elements.push(
-        <blockquote
-          key={key++}
-          className="my-3 border-l-3 border-blue-200 bg-blue-50/50 px-4 py-2 text-sm italic text-slate-600"
-        >
+        <blockquote key={elements.length} className="my-3 border-l-3 border-amber-300 dark:border-amber-600 bg-amber-50/50 dark:bg-amber-900/10 py-2 pl-4 pr-3 rounded-r-lg">
           {quoteLines.map((ql, qi) => (
-            <p key={qi}>{parseInline(ql)}</p>
+            <p key={qi} className="text-sm text-stone-600 dark:text-neutral-300 italic">{renderInline(ql)}</p>
           ))}
         </blockquote>
       );
       continue;
     }
 
+    // Unordered list
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      const listItems: string[] = [];
+      while (i < lines.length && (lines[i].trim().startsWith('- ') || lines[i].trim().startsWith('* '))) {
+        listItems.push(lines[i].trim().slice(2));
+        i++;
+      }
+      elements.push(
+        <ul key={elements.length} className="my-2 space-y-1 pl-4">
+          {listItems.map((item, li) => (
+            <li key={li} className="text-sm text-stone-700 dark:text-neutral-300 list-disc marker:text-stone-300 dark:marker:text-neutral-600">
+              {renderInline(item)}
+            </li>
+          ))}
+        </ul>
+      );
+      continue;
+    }
+
+    // Ordered list
+    const olMatch = trimmed.match(/^\d+\.\s/);
+    if (olMatch) {
+      const listItems: string[] = [];
+      while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+        listItems.push(lines[i].trim().replace(/^\d+\.\s/, ''));
+        i++;
+      }
+      elements.push(
+        <ol key={elements.length} className="my-2 space-y-1 pl-4">
+          {listItems.map((item, li) => (
+            <li key={li} className="text-sm text-stone-700 dark:text-neutral-300 list-decimal marker:text-stone-400 dark:marker:text-neutral-500">
+              {renderInline(item)}
+            </li>
+          ))}
+        </ol>
+      );
+      continue;
+    }
+
     // Paragraph
     elements.push(
-      <p
-        key={key++}
-        className="my-1.5 text-sm leading-relaxed text-slate-600"
-      >
-        {parseInline(line)}
+      <p key={i} className="my-2 text-sm leading-relaxed text-stone-700 dark:text-neutral-300">
+        {renderInline(trimmed)}
       </p>
     );
     i++;
   }
 
-  return <div className="prose-custom space-y-0">{elements}</div>;
+  return <div>{elements}</div>;
 };
+
+// Render inline formatting
+function renderInline(text: string): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  // Match: bold-italic, bold, italic, code, images inline, links
+  const regex = /(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|`([^`]+)`|!\[([^\]]*)\]\(([^)]+)\)|\[([^\]]+)\]\(([^)]+)\))/g;
+
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // Text before match
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[2]) {
+      // Bold italic
+      parts.push(<strong key={match.index} className="font-semibold italic text-stone-800 dark:text-neutral-100">{match[2]}</strong>);
+    } else if (match[3]) {
+      // Bold
+      parts.push(<strong key={match.index} className="font-semibold text-stone-800 dark:text-neutral-100">{match[3]}</strong>);
+    } else if (match[4]) {
+      // Italic
+      parts.push(<em key={match.index} className="italic text-stone-600 dark:text-neutral-300">{match[4]}</em>);
+    } else if (match[5]) {
+      // Code
+      parts.push(
+        <code key={match.index} className="rounded bg-stone-100 dark:bg-neutral-800 px-1.5 py-0.5 text-xs font-mono text-stone-700 dark:text-neutral-300">
+          {match[5]}
+        </code>
+      );
+    } else if (match[6] !== undefined && match[7]) {
+      // Inline image
+      parts.push(
+        <img key={match.index} src={match[7]} alt={match[6]} className="inline-block max-h-64 rounded" draggable={false} />
+      );
+    } else if (match[8] && match[9]) {
+      // Link
+      parts.push(
+        <a key={match.index} href={match[9]} target="_blank" rel="noopener noreferrer" className="text-amber-600 dark:text-amber-400 underline underline-offset-2 hover:text-amber-700 dark:hover:text-amber-300">
+          {match[8]}
+        </a>
+      );
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length === 1 ? parts[0] : <>{parts}</>;
+}
+
+// Render table
+function renderTable(tableLines: string[], keyBase: number): React.ReactNode {
+  const parseRow = (line: string) =>
+    line.split('|').slice(1, -1).map(cell => cell.trim());
+
+  if (tableLines.length < 2) return null;
+
+  const headers = parseRow(tableLines[0]);
+  // Skip separator line (index 1)
+  const bodyLines = tableLines.slice(2);
+
+  return (
+    <div key={keyBase} className="my-4 overflow-x-auto rounded-xl border border-stone-200 dark:border-neutral-700">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-stone-50 dark:bg-neutral-800">
+            {headers.map((h, hi) => (
+              <th key={hi} className="border-b border-stone-200 dark:border-neutral-700 px-3 py-2 text-left text-xs font-semibold text-stone-600 dark:text-neutral-300">
+                {renderInline(h)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {bodyLines.map((row, ri) => {
+            const cells = parseRow(row);
+            return (
+              <tr key={ri} className={ri % 2 === 0 ? 'bg-white dark:bg-neutral-900' : 'bg-stone-50/50 dark:bg-neutral-800/50'}>
+                {cells.map((cell, ci) => (
+                  <td key={ci} className="border-b border-stone-100 dark:border-neutral-800 px-3 py-2 text-stone-700 dark:text-neutral-300">
+                    {renderInline(cell)}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}

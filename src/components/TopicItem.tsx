@@ -1,77 +1,71 @@
-import { Star, BookOpen, FileText, FileDown, Microscope, PenLine, Eye, ScanLine } from 'lucide-react';
-import type { Topic, CategoryId } from '../data/content';
-import { subjects } from '../data/content';
+import React from 'react';
+import { Star, Eye } from 'lucide-react';
+import { type Topic, categories } from '../data/index';
 import { cn } from '../utils/cn';
 
 interface TopicItemProps {
   topic: Topic;
   showSubject?: boolean;
-  onViewDetail?: (topic: Topic) => void;
+  onViewDetail: (topic: Topic) => void;
 }
 
-const categoryMeta: Record<CategoryId, { icon: React.ReactNode; label: string; color: string }> = {
-  topics: { icon: <BookOpen size={11} />, label: 'Topic', color: 'bg-blue-50 text-blue-600' },
-  pyq_pdfs: { icon: <FileDown size={11} />, label: 'PYQ PDF', color: 'bg-rose-50 text-rose-600' },
-  pyqs: { icon: <FileText size={11} />, label: 'PYQ', color: 'bg-violet-50 text-violet-600' },
-  histology: { icon: <Microscope size={11} />, label: 'Histo', color: 'bg-emerald-50 text-emerald-600' },
-  radiology: { icon: <ScanLine size={11} />, label: 'Radio', color: 'bg-cyan-50 text-cyan-600' },
-  notes: { icon: <PenLine size={11} />, label: 'Note', color: 'bg-orange-50 text-orange-600' },
+const categoryStyles: Record<string, string> = {
+  topics: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
+  pyq_pdfs: 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400',
+  pyqs: 'bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400',
+  histology: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400',
+  radiology: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400',
+  notes: 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400',
 };
 
 export const TopicItem: React.FC<TopicItemProps> = ({ topic, showSubject, onViewDetail }) => {
-  const cat = categoryMeta[topic.category];
-  const subject = subjects.find(s => s.id === topic.subjectId);
-  const hasContent = !!topic.content && topic.content.trim().length > 0;
+  const cat = categories.find(c => c.id === topic.category);
+  const hasContent = !!topic.content;
 
   return (
     <div
       className={cn(
-        'flex w-full items-center gap-3 rounded-xl border bg-white px-4 py-3 transition-all',
-        hasContent
-          ? 'border-slate-100 hover:border-slate-200 hover:shadow-sm'
-          : 'border-slate-100'
+        'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 transition-all',
+        'bg-white dark:bg-neutral-900',
+        'border border-stone-100 dark:border-neutral-800',
+        'hover:border-stone-200 dark:hover:border-neutral-700',
+        'hover:shadow-sm',
       )}
     >
-      {/* Star */}
-      {topic.important && (
-        <Star size={12} className="shrink-0 fill-amber-400 text-amber-400" />
-      )}
-
-      {/* Title & badges */}
-      <div className="min-w-0 flex-1">
-        <h3
-          className={cn(
-            'truncate text-sm font-medium',
-            hasContent ? 'text-slate-800' : 'text-slate-500'
+      {/* Title area */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          {topic.important && (
+            <Star size={12} className="shrink-0 fill-amber-400 text-amber-400" />
           )}
-        >
-          {topic.title}
-        </h3>
-        <div className="mt-1 flex items-center gap-2">
-          <span
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium',
-              cat.color
-            )}
-          >
-            {cat.icon}
-            {cat.label}
+          <span className="text-sm text-stone-800 dark:text-neutral-100 truncate">
+            {topic.title}
           </span>
-          {showSubject && subject && (
-            <span className="text-[10px] text-slate-400">
-              {subject.icon} {subject.name}
-            </span>
-          )}
         </div>
+        {showSubject && (
+          <p className="mt-0.5 text-[11px] text-stone-400 dark:text-neutral-500 truncate">
+            {topic.subjectId}
+          </p>
+        )}
       </div>
 
-      {/* View more button — only if topic has content */}
-      {hasContent && onViewDetail && (
+      {/* Category badge */}
+      {cat && (
+        <span className={cn(
+          'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium',
+          categoryStyles[topic.category] || 'bg-stone-100 text-stone-500 dark:bg-neutral-800 dark:text-neutral-400'
+        )}>
+          {cat.name}
+        </span>
+      )}
+
+      {/* View button — only for topics with content */}
+      {hasContent && (
         <button
           onClick={() => onViewDetail(topic)}
-          className="flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-[11px] font-medium text-blue-600 transition-colors hover:bg-blue-100 active:scale-95"
+          className="shrink-0 flex items-center gap-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 text-[11px] font-medium text-amber-700 dark:text-amber-400 transition-all hover:bg-amber-100 dark:hover:bg-amber-900/30 active:scale-95"
         >
-          <Eye size={12} />
+          <Eye size={11} />
           View
         </button>
       )}

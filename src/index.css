@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -7,7 +9,18 @@
 
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #fafafa;
+  background: #faf9f7;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ─── Dark mode body ─── */
+.dark body,
+html.dark body {
+  background: #141414;
+  color: #e5e5e5;
 }
 
 /* Custom scrollbar */
@@ -21,18 +34,31 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #d6d3d1;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #a8a29e;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #404040;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #525252;
 }
 
 /* Selection */
 ::selection {
-  background-color: #dbeafe;
-  color: #1e3a5f;
+  background-color: #fef3c7;
+  color: #78350f;
+}
+
+.dark ::selection {
+  background-color: #451a03;
+  color: #fef3c7;
 }
 
 /* Smooth transitions */
@@ -60,6 +86,13 @@ body {
   @page {
     size: A4;
     margin: 2cm;
+  }
+
+  /* Allow selection in print */
+  body {
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    user-select: auto !important;
   }
 
   /* ── Step 1: Hide EVERYTHING ── */
@@ -100,12 +133,26 @@ body {
     position: static !important;
   }
 
+  /* Force light mode for print */
   body {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
     font-size: 11pt !important;
-    color: #1e293b !important;
+    color: #292524 !important;
+  }
+
+  /* Force light colors for all elements */
+  #print-area * {
+    color: #292524 !important;
+    background-color: transparent !important;
+    border-color: #e7e5e4 !important;
+  }
+
+  #print-area h1,
+  #print-area h2,
+  #print-area h3 {
+    color: #1c1917 !important;
   }
 
   /* ── Hide non-print elements inside print-area ── */
@@ -136,14 +183,14 @@ body {
   .print-img img {
     max-width: 100% !important;
     height: auto !important;
-    border: 0.5pt solid #e2e8f0 !important;
+    border: 0.5pt solid #e7e5e4 !important;
     box-shadow: none !important;
     border-radius: 6pt !important;
   }
 
   figcaption {
     font-size: 8pt !important;
-    color: #64748b !important;
+    color: #78716c !important;
   }
 
   /* ── Tables ── */
@@ -155,14 +202,15 @@ body {
   }
 
   th {
-    background: #f8fafc !important;
+    background: #fafaf9 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
   td, th {
-    border: 0.5pt solid #e2e8f0 !important;
+    border: 0.5pt solid #e7e5e4 !important;
     padding: 4pt 8pt !important;
+    color: #292524 !important;
   }
 
   /* ── Headings stay with content ── */
@@ -181,10 +229,16 @@ body {
   blockquote {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
-    border-left-color: #94a3b8 !important;
-    background: #f8fafc !important;
+    border-left-color: #a8a29e !important;
+    background: #fafaf9 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  /* ── Credits section ── */
+  .credits-section,
+  .credits-section * {
+    color: #78716c !important;
   }
 
   /* ── Badges ── */
@@ -201,13 +255,13 @@ body {
   a[href^="http"]::after {
     content: " (" attr(href) ")";
     font-size: 8pt;
-    color: #94a3b8;
+    color: #a8a29e;
     word-break: break-all;
   }
 
   /* ── Code ── */
   code {
-    background: #f1f5f9 !important;
+    background: #f5f5f4 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     font-size: 9pt !important;
