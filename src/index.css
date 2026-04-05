@@ -61,6 +61,19 @@ html.dark body {
   letter-spacing: -0.02em;
 }
 
+.text-editorial-tight {
+  letter-spacing: -0.02em;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }

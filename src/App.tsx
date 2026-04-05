@@ -17,6 +17,8 @@ import { TopicItem } from './components/TopicItem';
 import { TopicDetail } from './components/TopicDetail';
 import { ContentGuide } from './components/ContentGuide';
 import { ContributePage } from './components/ContributePage';
+import { BrowseCategoryTiles } from './components/BrowseCategoryTiles';
+import { LandingEditorial, MBBS_BROWSE_ANCHOR_ID } from './components/LandingEditorial';
 import {
   subjects,
   units,
@@ -119,6 +121,12 @@ export function App() {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const prevViewRef = useRef<{ view: View; subjectId: string | null; unitId: string | null; category: CategoryId | null }>({ view: 'home', subjectId: null, unitId: null, category: null });
+  const mainScrollRef = useRef<HTMLElement>(null);
+
+  /** Main is the scroll container; reset to top when route-like state changes (e.g. new chapter keeps view=unit). */
+  useEffect(() => {
+    mainScrollRef.current?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [view, activeUnitId, activeSubjectId, activeCategory, activeYear]);
 
   useEffect(() => {
     applyTheme(theme);
@@ -500,7 +508,7 @@ export function App() {
         onThemeChange={handleThemeChange}
       />
 
-      <main className="flex-1 overflow-y-auto">
+      <main ref={mainScrollRef} className="flex-1 overflow-y-auto">
         <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/75 dark:bg-zinc-950/75 px-4 py-3 shadow-[0_1px_0_rgb(0_0_0/0.03)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/65 dark:supports-[backdrop-filter]:bg-zinc-950/65 lg:hidden">
           <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
             <Menu size={20} className="text-zinc-600 dark:text-zinc-400" />
@@ -533,44 +541,30 @@ function HomeView({
   const importantTopics = getImportantTopics(year).slice(0, 6);
   const yearLabel = `Year ${year}`;
 
-  const tiles: { id: CategoryId; label: string; count: number; color: string; icon: React.ReactNode }[] = [
-    { id: 'topics', label: 'Topics', count: stats.topics, color: 'from-sky-500 to-sky-600', icon: <BookOpen size={18} /> },
-    { id: 'pyq_pdfs', label: 'PYQ PDFs', count: stats.pyq_pdfs, color: 'from-rose-500 to-rose-600', icon: <FileDown size={18} /> },
-    { id: 'pyqs', label: 'PYQs', count: stats.pyqs, color: 'from-purple-500 to-purple-600', icon: <FileText size={18} /> },
-    { id: 'notes', label: 'Notes', count: stats.notes, color: 'from-orange-500 to-orange-600', icon: <PenLine size={18} /> },
-    { id: 'histology', label: 'Histology', count: stats.histology, color: 'from-emerald-500 to-emerald-600', icon: <Microscope size={18} /> },
-    { id: 'radiology', label: 'Radiology', count: stats.radiology, color: 'from-cyan-500 to-cyan-600', icon: <ScanLine size={18} /> },
-  ];
-  const filteredTiles = tiles.filter(t => t.count > 0);
-
   return (
     <div className="animate-fade-up">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
-          MBBS {yearLabel}
-        </h1>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-          {stats.total} resources organised across {yearSubjects.length} subjects
-        </p>
-      </div>
+      <LandingEditorial
+        yearLabel={yearLabel}
+        editionYear={new Date().getFullYear()}
+        yearSubjects={yearSubjects}
+        onExploreArchive={() =>
+          document.getElementById(MBBS_BROWSE_ANCHOR_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+        onSubjectOpen={(subjectId) => onNavigate('subject', subjectId)}
+        onContribute={() => onNavigate('contribute')}
+      />
 
-      {filteredTiles.length > 0 && (
-        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {filteredTiles.map(tile => (
-            <button
-              key={tile.id}
-              onClick={() => onCategoryClick(tile.id)}
-              className="group rounded-2xl border border-zinc-100/90 dark:border-zinc-800/90 bg-white/95 dark:bg-zinc-900/95 p-4 text-left shadow-sm transition-all duration-200 hover:border-violet-200/90 dark:hover:border-violet-500/25 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
-            >
-              <div className={cn('mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br text-white transition-transform duration-200 group-hover:scale-110', tile.color)}>
-                {tile.icon}
-              </div>
-              <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">{tile.count}</p>
-              <p className="text-xs text-zinc-400 dark:text-zinc-500">{tile.label}</p>
-            </button>
-          ))}
+      <div id={MBBS_BROWSE_ANCHOR_ID} className="scroll-mt-6 border-t border-zinc-200/80 pt-12 dark:border-zinc-800/80 md:scroll-mt-8 md:pt-16">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+            Browse library
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+            {stats.total} resources organised across {yearSubjects.length} subjects
+          </p>
         </div>
-      )}
+
+      <BrowseCategoryTiles stats={stats} onCategoryClick={onCategoryClick} />
 
       <div className="mb-8">
         <h2 className="mb-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">Subjects</h2>
@@ -613,6 +607,7 @@ function HomeView({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
