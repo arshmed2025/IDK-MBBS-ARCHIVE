@@ -1,6 +1,6 @@
 import React from 'react';
 import { Star, Eye } from 'lucide-react';
-import { type Topic, categories } from '../data/index';
+import { type Topic, categories, subjects } from '../data/index';
 import { cn } from '../utils/cn';
 
 interface TopicItemProps {
@@ -30,14 +30,15 @@ const badgeColors: Record<string, string> = {
 export const TopicItem: React.FC<TopicItemProps> = ({ topic, showSubject, onViewDetail }) => {
   const cat = categories.find(c => c.id === topic.category);
   const hasContent = !!topic.content;
+  const subjectLabel = subjects.find(s => s.id === topic.subjectId)?.name;
 
   return (
     <div
       className={cn(
         'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 transition-all duration-200',
-        'bg-white dark:bg-zinc-900',
-        'border border-zinc-100 dark:border-zinc-800',
-        hasContent && 'hover:border-violet-200 dark:hover:border-violet-500/20 hover:shadow-sm',
+        'bg-white/90 dark:bg-zinc-900/90 backdrop-blur-[2px]',
+        'border border-zinc-100/90 dark:border-zinc-800/90 shadow-[0_1px_2px_rgb(0_0_0/0.04)]',
+        hasContent && 'hover:border-violet-200/90 dark:hover:border-violet-500/25 hover:shadow-md hover:-translate-y-px',
       )}
     >
       <div className="flex-1 min-w-0">
@@ -51,7 +52,7 @@ export const TopicItem: React.FC<TopicItemProps> = ({ topic, showSubject, onView
         </div>
         {showSubject && (
           <p className="mt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500 truncate">
-            {topic.subjectId}
+            {subjectLabel ?? topic.subjectId}
           </p>
         )}
       </div>

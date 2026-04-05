@@ -55,14 +55,14 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
       </div>
 
       {/* Content Card */}
-      <div id="print-area" className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm overflow-hidden">
+      <div id="print-area" className="rounded-2xl border border-zinc-200/90 dark:border-zinc-800/90 bg-white/95 dark:bg-zinc-900/95 shadow-[0_4px_24px_-8px_rgb(0_0_0/0.08)] dark:shadow-[0_4px_32px_-12px_rgb(0_0_0/0.45)] overflow-hidden ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
         {/* Print header */}
         <div className="print-only hidden px-6 py-3 border-b border-zinc-200 text-xs text-zinc-500">
           MBBS RESOURCES
         </div>
 
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="relative px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800 bg-gradient-to-b from-violet-50/40 to-transparent dark:from-violet-500/[0.06] dark:to-transparent">
           {/* Breadcrumb */}
           <div className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500 mb-3">
             <span>{subject?.icon}</span>

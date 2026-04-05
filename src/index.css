@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -17,9 +21,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #fafafa;
+  font-family: var(--font-sans);
+  background-color: #fafafa;
+  background-image:
+    radial-gradient(ellipse 110% 70% at 50% -18%, rgb(139 92 246 / 0.09), transparent 52%),
+    radial-gradient(ellipse 55% 45% at 100% 0%, rgb(14 165 233 / 0.06), transparent 48%);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -27,8 +38,27 @@ body {
 }
 
 html.dark body {
-  background: #18181b;
+  background-color: #18181b;
+  background-image:
+    radial-gradient(ellipse 110% 70% at 50% -18%, rgb(139 92 246 / 0.14), transparent 52%),
+    radial-gradient(ellipse 55% 45% at 100% 0%, rgb(59 130 246 / 0.08), transparent 48%);
   color: #e4e4e7;
+}
+
+/* Focus — keyboard navigation */
+:where(button, a, select, input, textarea):focus-visible {
+  outline: 2px solid rgb(139 92 246 / 0.45);
+  outline-offset: 2px;
+}
+
+/* Article / markdown rhythm */
+.prose-custom p {
+  line-height: 1.7;
+}
+
+.prose-custom h1,
+.prose-custom h2 {
+  letter-spacing: -0.02em;
 }
 
 /* Scrollbar */

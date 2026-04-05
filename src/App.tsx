@@ -483,7 +483,7 @@ export function App() {
   };
 
   return (
-    <div className="flex h-screen bg-[#fafafa] dark:bg-[#18181b] font-[Inter,system-ui,sans-serif]">
+    <div className="flex h-screen min-h-0 bg-transparent font-sans antialiased">
       <Sidebar
         activeYear={activeYear}
         activeView={view}
@@ -501,7 +501,7 @@ export function App() {
       />
 
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-zinc-200 dark:border-zinc-800 bg-[#fafafa]/80 dark:bg-[#18181b]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
+        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/75 dark:bg-zinc-950/75 px-4 py-3 shadow-[0_1px_0_rgb(0_0_0/0.03)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/65 dark:supports-[backdrop-filter]:bg-zinc-950/65 lg:hidden">
           <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
             <Menu size={20} className="text-zinc-600 dark:text-zinc-400" />
           </button>
@@ -510,7 +510,7 @@ export function App() {
           </button>
         </div>
 
-        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
           {renderContent()}
         </div>
       </main>
@@ -546,8 +546,12 @@ function HomeView({
   return (
     <div className="animate-fade-up">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">MBBS {yearLabel}</h1>
-        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-500">{stats.total} resources organised across {yearSubjects.length} subjects</p>
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+          MBBS {yearLabel}
+        </h1>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+          {stats.total} resources organised across {yearSubjects.length} subjects
+        </p>
       </div>
 
       {filteredTiles.length > 0 && (
@@ -556,7 +560,7 @@ function HomeView({
             <button
               key={tile.id}
               onClick={() => onCategoryClick(tile.id)}
-              className="group rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 text-left shadow-sm transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-500/20 hover:shadow-md active:scale-[0.97] cursor-pointer"
+              className="group rounded-2xl border border-zinc-100/90 dark:border-zinc-800/90 bg-white/95 dark:bg-zinc-900/95 p-4 text-left shadow-sm transition-all duration-200 hover:border-violet-200/90 dark:hover:border-violet-500/25 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
             >
               <div className={cn('mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br text-white transition-transform duration-200 group-hover:scale-110', tile.color)}>
                 {tile.icon}
@@ -578,7 +582,7 @@ function HomeView({
               <button
                 key={subject.id}
                 onClick={() => onNavigate('subject', subject.id)}
-                className="group flex items-center gap-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 text-left transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-500/20 hover:shadow-md active:scale-[0.98] cursor-pointer"
+                className="group flex items-center gap-4 rounded-2xl border border-zinc-100/90 dark:border-zinc-800/90 bg-white/95 dark:bg-zinc-900/95 p-4 text-left shadow-sm transition-all duration-200 hover:border-violet-200/90 dark:hover:border-violet-500/25 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer"
               >
                 <span className="text-3xl">{subject.icon}</span>
                 <div className="flex-1">

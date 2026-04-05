@@ -88,8 +88,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={cn(
           'fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r transition-transform duration-300 lg:static lg:translate-x-0',
-          'border-zinc-200 bg-zinc-50/95 backdrop-blur-xl',
-          'dark:border-zinc-800 dark:bg-zinc-900/95',
+          'border-zinc-200/90 bg-zinc-50/90 backdrop-blur-xl',
+          'dark:border-zinc-800/90 dark:bg-zinc-950/90',
+          'lg:shadow-[4px_0_32px_-16px_rgb(0_0_0/0.08)] dark:lg:shadow-[4px_0_32px_-16px_rgb(0_0_0/0.35)]',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -122,14 +123,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Search */}
         <div className="px-3 pt-3">
-          <div className="flex items-center gap-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 px-3 py-2">
-            <Search size={14} className="text-zinc-400 dark:text-zinc-500" />
+          <div className="flex items-center gap-2 rounded-xl border border-transparent bg-zinc-100/90 px-3 py-2 transition-colors focus-within:border-violet-300/50 focus-within:bg-white dark:bg-zinc-800/80 dark:focus-within:border-violet-500/30 dark:focus-within:bg-zinc-800">
+            <Search size={14} className="shrink-0 text-zinc-400 dark:text-zinc-500" />
             <input
               type="text"
               placeholder="Search topics…"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full bg-transparent text-sm text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none"
+              className="w-full min-w-0 bg-transparent text-sm text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none"
             />
           </div>
         </div>
