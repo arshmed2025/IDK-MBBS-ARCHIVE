@@ -21,6 +21,7 @@ import {
   type CategoryId,
 } from '../data/index';
 import { cn } from '../utils/cn';
+import { SubjectBadge } from '../utils/subjectColours';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -147,7 +148,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={cn(
                 'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-all duration-200',
                 activeView === 'home'
-                  ? 'bg-violet-50 dark:bg-violet-500/10 font-medium text-violet-700 dark:text-violet-400'
+                  ? 'bg-sky-50 dark:bg-sky-500/10 font-medium text-sky-700 dark:text-sky-400'
                   : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
@@ -159,7 +160,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={cn(
                 'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-all duration-200',
                 activeView === 'important'
-                  ? 'bg-violet-50 dark:bg-violet-500/10 font-medium text-violet-700 dark:text-violet-400'
+                  ? 'bg-sky-50 dark:bg-sky-500/10 font-medium text-sky-700 dark:text-sky-400'
                   : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
@@ -171,7 +172,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={cn(
                 'flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-all duration-200',
                 activeView === 'contribute'
-                  ? 'bg-violet-50 dark:bg-violet-500/10 font-medium text-violet-700 dark:text-violet-400'
+                  ? 'bg-sky-50 dark:bg-sky-500/10 font-medium text-sky-700 dark:text-sky-400'
                   : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
@@ -216,7 +217,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                       )}
                     >
-                      <span className="text-base">{subject.icon}</span>
+                      <SubjectBadge subjectId={subject.id} subjectName={subject.name} size="sm" />
                       <span className="flex-1 truncate">{subject.name}</span>
                       <span className="text-[10px] text-zinc-300 dark:text-zinc-600">{totalTopics}</span>
                     </button>
@@ -244,7 +245,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           >
                             <div className={cn(
                               'h-1.5 w-1.5 shrink-0 rounded-full',
-                              isActiveUnit ? 'bg-violet-500' : 'bg-zinc-300 dark:bg-zinc-600'
+                              isActiveUnit ? 'bg-sky-500' : 'bg-zinc-300 dark:bg-zinc-600'
                             )} />
                             <span className="flex-1 truncate text-left">{unit.name}</span>
                             <span className="text-[10px] text-zinc-300 dark:text-zinc-600">{unitTopicCount}</span>
@@ -274,7 +275,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className={cn(
                     'flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-200',
                     theme === mode
-                      ? 'bg-white dark:bg-zinc-700 text-violet-600 dark:text-violet-400 shadow-sm'
+                      ? 'bg-white dark:bg-zinc-700 text-sky-600 dark:text-sky-400 shadow-sm'
                       : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'
                   )}
                   title={label}
