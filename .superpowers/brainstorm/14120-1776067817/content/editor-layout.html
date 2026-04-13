@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Editor Layout</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "DM Sans", system-ui, sans-serif; background: #f4f4f2; color: #09090b; padding: 28px; }
+  h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.02em; }
+  .subtitle { font-size: 13px; color: #71717a; margin-bottom: 28px; }
+
+  .options-list { display: flex; flex-direction: column; gap: 20px; }
+  .opt { border-radius: 14px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color 0.15s, transform 0.12s; }
+  .opt:hover { border-color: #0ea5e9; transform: translateY(-2px); }
+  .opt.selected { border-color: #0ea5e9; }
+  .opt-label { background: #09090b; color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .opt-label span { color: #71717a; font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 12px; }
+
+  /* ── shared editor chrome ── */
+  .editor-chrome { background: white; }
+  .editor-topbar { background: #f9f9f8; border-bottom: 1px solid #e5e5e3; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .editor-topbar-title { font-size: 12px; font-weight: 600; color: #3f3f46; flex: 1; }
+  .btn-sm { background: #09090b; color: white; border: none; border-radius: 7px; padding: 5px 12px; font-size: 11px; font-weight: 600; cursor: pointer; }
+  .btn-sm-ghost { background: white; color: #52525b; border: 1px solid #e5e5e3; border-radius: 7px; padding: 5px 12px; font-size: 11px; font-weight: 600; cursor: pointer; }
+
+  /* toolbar */
+  .toolbar { display: flex; align-items: center; gap: 2px; padding: 6px 10px; border-bottom: 1px solid #f0f0ee; background: #fafaf9; flex-wrap: wrap; }
+  .tb-btn { background: none; border: none; border-radius: 5px; padding: 4px 7px; font-size: 11px; font-weight: 600; color: #52525b; cursor: pointer; }
+  .tb-btn:hover { background: #f0f0ee; }
+  .tb-sep { width: 1px; height: 16px; background: #e5e5e3; margin: 0 4px; }
+  .tb-label { font-size: 10px; color: #a1a1aa; font-weight: 500; padding: 0 4px; }
+
+  /* text area mockup */
+  .fake-textarea { font-family: "Menlo", monospace; font-size: 12px; line-height: 1.7; color: #3f3f46; padding: 14px 16px; min-height: 160px; background: white; resize: none; border: none; outline: none; width: 100%; overflow-y: auto; }
+  .fake-textarea .kw { color: #0284c7; font-weight: 600; }
+  .fake-textarea .bold { font-weight: 700; color: #09090b; }
+  .fake-textarea .em { font-style: italic; color: #71717a; }
+  .fake-textarea .link { color: #7c3aed; }
+  .fake-textarea .img-tag { color: #16a34a; }
+
+  /* preview panel */
+  .preview-panel { background: #fafaf9; padding: 14px 18px; min-height: 160px; border-left: 1px solid #f0f0ee; }
+  .pv-h2 { font-size: 14px; font-weight: 700; color: #09090b; margin-bottom: 8px; margin-top: 4px; }
+  .pv-p { font-size: 12px; color: #52525b; line-height: 1.65; margin-bottom: 8px; }
+  .pv-bold { font-weight: 700; color: #09090b; }
+  .pv-img { width: 100%; height: 56px; background: linear-gradient(135deg, #e0f2fe, #dcfce7); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #0284c7; font-weight: 600; margin-bottom: 8px; border: 1px solid #bae6fd; }
+  .pv-table { width: 100%; font-size: 10px; border-collapse: collapse; margin-top: 6px; }
+  .pv-table th { background: #f4f4f2; padding: 4px 7px; text-align: left; font-weight: 600; color: #3f3f46; border: 1px solid #e5e5e3; }
+  .pv-table td { padding: 4px 7px; color: #52525b; border: 1px solid #e5e5e3; }
+  .pv-link { color: #7c3aed; text-decoration: underline; font-size: 12px; }
+  .pv-video { width: 100%; height: 52px; background: #09090b; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 600; gap: 5px; margin-bottom: 8px; }
+  .copy-output { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px 14px; font-family: "Menlo", monospace; font-size: 10px; color: #16a34a; line-height: 1.6; }
+
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tag { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px; border: 1px solid; }
+  .tag-img { background: #f0fdf4; color: #16a34a; border-color: #86efac; }
+  .tag-vid { background: #f0f9ff; color: #0284c7; border-color: #7dd3fc; }
+  .tag-pdf { background: #fff7ed; color: #ea580c; border-color: #fdba74; }
+  .tag-tbl { background: #faf5ff; color: #7c3aed; border-color: #c4b5fd; }
+  .tag-lnk { background: #fdf4ff; color: #c026d3; border-color: #e879f9; }
+</style>
+</head>
+<body>
+
+<h2>Pick a layout for the Markdown Editor</h2>
+<p class="subtitle">Embedded in Admin → Content Guide. Choose the one that fits the writing flow best.</p>
+
+<div class="options-list">
+
+  <!-- A: Side-by-side split -->
+  <div class="opt" onclick="pick(this,'split')">
+    <div class="opt-label">Option A — Live split view <span>Editor left · Preview right · Always visible</span></div>
+    <div class="editor-chrome">
+      <div class="editor-topbar">
+        <span class="editor-topbar-title">Markdown Editor</span>
+        <button class="btn-sm-ghost">Clear</button>
+        <button class="btn-sm">Copy code →</button>
+      </div>
+      <div class="toolbar">
+        <span class="tb-label">Insert:</span>
+        <button class="tb-btn">B</button>
+        <button class="tb-btn"><i>I</i></button>
+        <button class="tb-btn">H2</button>
+        <button class="tb-btn">H3</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn">— List</button>
+        <button class="tb-btn">1. List</button>
+        <button class="tb-btn">Table</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" style="color:#16a34a;">🖼 Image</button>
+        <button class="tb-btn" style="color:#0284c7;">▶ Video</button>
+        <button class="tb-btn" style="color:#ea580c;">📄 PDF</button>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; border-top: 1px solid #f0f0ee;">
+        <div>
+          <div style="padding: 6px 12px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#a1a1aa; background:#fafaf9; border-bottom:1px solid #f0f0ee; border-right:1px solid #f0f0ee;">Markdown</div>
+          <div class="fake-textarea">
+<span class="kw">## </span><span class="bold">Brachial Plexus</span>
+
+<span class="kw">### </span>Formation
+Roots → Trunks → Divisions → Cords
+
+<span class="kw">**</span><span class="bold">Remember:</span><span class="kw">**</span> Robert Taylor Drinks Cold Beer
+
+<span class="img-tag">![Diagram](https://cdn.example.com/brachial.jpg)</span>
+
+<span class="link">| Nerve | Origin | Distribution |</span>
+<span class="link">|-------|--------|--------------|</span>
+<span class="link">| Musculocutaneous | C5-C7 | Flexor compt |</span>
+          </div>
+        </div>
+        <div>
+          <div style="padding: 6px 12px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#a1a1aa; background:#fafaf9; border-bottom:1px solid #f0f0ee;">Preview</div>
+          <div class="preview-panel">
+            <div class="pv-h2">Brachial Plexus</div>
+            <p class="pv-p">Roots → Trunks → Divisions → Cords</p>
+            <p class="pv-p"><span class="pv-bold">Remember:</span> Robert Taylor Drinks Cold Beer</p>
+            <div class="pv-img">🖼 Brachial Plexus Diagram</div>
+            <table class="pv-table"><thead><tr><th>Nerve</th><th>Origin</th><th>Distribution</th></tr></thead><tbody><tr><td>Musculocutaneous</td><td>C5-C7</td><td>Flexor compt</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Tabs -->
+  <div class="opt" onclick="pick(this,'tabs')">
+    <div class="opt-label">Option B — Tab view <span>Write tab · Preview tab · Toggle between them</span></div>
+    <div class="editor-chrome">
+      <div class="editor-topbar">
+        <span class="editor-topbar-title">Markdown Editor</span>
+        <button class="btn-sm">Copy code →</button>
+      </div>
+      <div style="display:flex; border-bottom:1px solid #e5e5e3; background:#fafaf9;">
+        <div style="padding:8px 18px; font-size:12px; font-weight:700; color:#09090b; border-bottom:2px solid #09090b; cursor:pointer;">Write</div>
+        <div style="padding:8px 18px; font-size:12px; font-weight:600; color:#a1a1aa; cursor:pointer;">Preview</div>
+      </div>
+      <div class="toolbar">
+        <span class="tb-label">Insert:</span>
+        <button class="tb-btn">B</button>
+        <button class="tb-btn"><i>I</i></button>
+        <button class="tb-btn">H2</button>
+        <button class="tb-btn">H3</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn">— List</button>
+        <button class="tb-btn">Table</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" style="color:#16a34a;">🖼 Image</button>
+        <button class="tb-btn" style="color:#0284c7;">▶ Video</button>
+        <button class="tb-btn" style="color:#ea580c;">📄 PDF</button>
+      </div>
+      <div class="fake-textarea" style="min-height:180px;">
+<span class="kw">## </span><span class="bold">Brachial Plexus</span>
+
+<span class="kw">### </span>Formation
+Roots → Trunks → Divisions → Cords
+
+<span class="kw">**</span><span class="bold">Remember:</span><span class="kw">**</span> Robert Taylor Drinks Cold Beer
+
+<span class="img-tag">![Diagram](https://cdn.example.com/brachial.jpg)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Editor + copy output -->
+  <div class="opt" onclick="pick(this,'generate')">
+    <div class="opt-label">Option C — Write &amp; Generate <span>Rich text editor → generates ready-to-paste code</span></div>
+    <div class="editor-chrome">
+      <div class="editor-topbar">
+        <span class="editor-topbar-title">Content Builder</span>
+        <button class="btn-sm-ghost">Reset</button>
+        <button class="btn-sm">Generate code ↓</button>
+      </div>
+      <!-- Insert buttons as prominent blocks -->
+      <div style="padding:12px 14px; border-bottom:1px solid #f0f0ee; background:#fafaf9;">
+        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#a1a1aa; margin-bottom:8px;">Add to content:</div>
+        <div class="tag-row">
+          <div class="tag tag-img">+ Image link</div>
+          <div class="tag tag-vid">+ Video link</div>
+          <div class="tag tag-pdf">+ PDF link</div>
+          <div class="tag tag-tbl">+ Table</div>
+          <div class="tag tag-lnk">+ Hyperlink</div>
+        </div>
+        <div class="fake-textarea" style="min-height:110px; border:1px solid #e5e5e3; border-radius:8px; padding:10px 12px; font-family:system-ui; font-size:12px; color:#3f3f46;">
+Type your content here. Click the buttons above to insert images, videos, PDFs, tables, and links at the cursor position.
+
+<span class="pv-bold">Bold text</span> and <span class="em">italic text</span> via toolbar buttons.
+        </div>
+      </div>
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#16a34a; margin-bottom:8px;">Generated code — paste into yearX.ts:</div>
+        <div class="copy-output">topic('anatomy', 'anat-ul', '⭐ Brachial Plexus',
+`## Brachial Plexus
+
+Roots → Trunks → Divisions → Cords
+
+**Remember:** Robert Taylor Drinks Cold Beer
+
+![Diagram](https://cdn.example.com/brachial.jpg)
+`),</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function pick(el, choice) {
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.__sp_select) window.__sp_select(choice, el.querySelector('.opt-label').textContent.trim());
+}
+</script>
+</body>
+</html>

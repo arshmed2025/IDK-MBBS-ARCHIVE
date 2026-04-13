@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/arsheepsingh/.claude/plugins/cache/superpowers-dev/superpowers/5.0.7/skills/brainstorming/**)"
+    ]
+  }
+}

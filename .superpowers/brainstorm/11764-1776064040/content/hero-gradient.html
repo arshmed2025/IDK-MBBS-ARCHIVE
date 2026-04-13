@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Gradient Options</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "DM Sans", system-ui, sans-serif; background: #f0f0ee; color: #09090b; padding: 32px; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .subtitle { font-size: 14px; color: #71717a; margin-bottom: 32px; }
+
+  .options-list { display: flex; flex-direction: column; gap: 16px; }
+  .opt { border-radius: 14px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+  .opt:hover { border-color: #09090b; transform: translateY(-2px); }
+  .opt.selected { border-color: #09090b; }
+  .opt-label { background: #09090b; color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .opt-label span { color: #71717a; font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 12px; }
+
+  .hero { padding: 44px 48px; position: relative; overflow: hidden; }
+  .hero h1 { font-size: 46px; font-weight: 800; line-height: 1.04; letter-spacing: -0.03em; color: #09090b; position: relative; }
+  .hero p { margin-top: 14px; font-size: 15px; line-height: 1.65; max-width: 500px; position: relative; color: #3f3f46; }
+  .hero-actions { display: flex; gap: 10px; margin-top: 24px; position: relative; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; position: relative; }
+  .tag { border-radius: 20px; padding: 5px 13px; font-size: 11px; font-weight: 600; color: #27272a; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .btn-dark { background: #09090b; color: white; padding: 10px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-light { background: white; color: #27272a; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .circle { position: absolute; border-radius: 50%; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h2>Pick your gradient palette</h2>
+<p class="subtitle">Same pastel full-width hero layout — different colour energy. No violet/purple.</p>
+
+<div class="options-list">
+
+  <!-- A: Sunrise warm -->
+  <div class="opt" onclick="pick(this,'warm')">
+    <div class="opt-label">Option A — Warm sunrise <span>Amber · Rose · Peach</span></div>
+    <div class="hero" style="background: linear-gradient(135deg, #fff7ed 0%, #ffe4e6 50%, #fef9c3 100%);">
+      <div class="circle" style="width:280px;height:280px;background:radial-gradient(circle,rgba(251,146,60,0.22),transparent);top:-60px;right:5%;"></div>
+      <div class="circle" style="width:180px;height:180px;background:radial-gradient(circle,rgba(251,207,232,0.4),transparent);bottom:-30px;left:35%;"></div>
+      <h1>Study smarter,<br>not harder. <span style="color:#f97316;">✦</span></h1>
+      <p>Topics, PYQs, slides, and scans — grouped by subject and chapter so you can study without hunting through chats and drives.</p>
+      <div class="hero-actions">
+        <button class="btn-dark">Browse library ↓</button>
+        <button class="btn-light">Contribute →</button>
+      </div>
+      <div class="hero-tags">
+        <div class="tag" style="background:white;">📖 202 Topics</div>
+        <div class="tag" style="background:white;">📝 89 PYQs</div>
+        <div class="tag" style="background:white;">📄 48 PYQ PDFs</div>
+        <div class="tag" style="background:white;">✏️ 34 Notes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Ocean cool -->
+  <div class="opt" onclick="pick(this,'ocean')">
+    <div class="opt-label">Option B — Ocean cool <span>Sky · Teal · Cyan</span></div>
+    <div class="hero" style="background: linear-gradient(135deg, #f0f9ff 0%, #ecfeff 50%, #f0fdf4 100%);">
+      <div class="circle" style="width:280px;height:280px;background:radial-gradient(circle,rgba(14,165,233,0.18),transparent);top:-60px;right:5%;"></div>
+      <div class="circle" style="width:180px;height:180px;background:radial-gradient(circle,rgba(16,185,129,0.15),transparent);bottom:-30px;left:35%;"></div>
+      <h1>Study smarter,<br>not harder. <span style="color:#0ea5e9;">✦</span></h1>
+      <p>Topics, PYQs, slides, and scans — grouped by subject and chapter so you can study without hunting through chats and drives.</p>
+      <div class="hero-actions">
+        <button class="btn-dark">Browse library ↓</button>
+        <button class="btn-light">Contribute →</button>
+      </div>
+      <div class="hero-tags">
+        <div class="tag" style="background:white;">📖 202 Topics</div>
+        <div class="tag" style="background:white;">📝 89 PYQs</div>
+        <div class="tag" style="background:white;">📄 48 PYQ PDFs</div>
+        <div class="tag" style="background:white;">✏️ 34 Notes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Neutral warm -->
+  <div class="opt" onclick="pick(this,'neutral')">
+    <div class="opt-label">Option C — Neutral warm <span>Stone · Sand · Cream — almost no colour</span></div>
+    <div class="hero" style="background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 40%, #fef9c3 100%);">
+      <div class="circle" style="width:260px;height:260px;background:radial-gradient(circle,rgba(180,170,140,0.15),transparent);top:-60px;right:5%;"></div>
+      <div class="circle" style="width:180px;height:180px;background:radial-gradient(circle,rgba(234,179,8,0.1),transparent);bottom:-30px;left:35%;"></div>
+      <h1>Study smarter,<br>not harder. <span style="color:#a16207;">✦</span></h1>
+      <p>Topics, PYQs, slides, and scans — grouped by subject and chapter so you can study without hunting through chats and drives.</p>
+      <div class="hero-actions">
+        <button class="btn-dark">Browse library ↓</button>
+        <button class="btn-light">Contribute →</button>
+      </div>
+      <div class="hero-tags">
+        <div class="tag" style="background:white;">📖 202 Topics</div>
+        <div class="tag" style="background:white;">📝 89 PYQs</div>
+        <div class="tag" style="background:white;">📄 48 PYQ PDFs</div>
+        <div class="tag" style="background:white;">✏️ 34 Notes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D: Rose gold -->
+  <div class="opt" onclick="pick(this,'rose')">
+    <div class="opt-label">Option D — Rose gold <span>Pink · Rose · Amber</span></div>
+    <div class="hero" style="background: linear-gradient(135deg, #fff1f2 0%, #fdf4ff 40%, #fffbeb 100%);">
+      <div class="circle" style="width:280px;height:280px;background:radial-gradient(circle,rgba(244,63,94,0.15),transparent);top:-60px;right:5%;"></div>
+      <div class="circle" style="width:180px;height:180px;background:radial-gradient(circle,rgba(217,119,6,0.12),transparent);bottom:-30px;left:35%;"></div>
+      <h1>Study smarter,<br>not harder. <span style="color:#e11d48;">✦</span></h1>
+      <p>Topics, PYQs, slides, and scans — grouped by subject and chapter so you can study without hunting through chats and drives.</p>
+      <div class="hero-actions">
+        <button class="btn-dark">Browse library ↓</button>
+        <button class="btn-light">Contribute →</button>
+      </div>
+      <div class="hero-tags">
+        <div class="tag" style="background:white;">📖 202 Topics</div>
+        <div class="tag" style="background:white;">📝 89 PYQs</div>
+        <div class="tag" style="background:white;">📄 48 PYQ PDFs</div>
+        <div class="tag" style="background:white;">✏️ 34 Notes</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function pick(el, choice) {
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.__sp_select) window.__sp_select(choice, el.querySelector('.opt-label').textContent);
+}
+</script>
+</body>
+</html>
