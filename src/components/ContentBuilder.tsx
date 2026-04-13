@@ -14,6 +14,8 @@ const CONTENT_TYPES: { value: ContentType; label: string }[] = [
   { value: 'note',    label: 'note — Note' },
 ];
 
+const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
 export function ContentBuilder() {
   const [contentType, setContentType] = useState<ContentType>('topic');
   const [subjectId,   setSubjectId]   = useState('anatomy');
@@ -38,6 +40,7 @@ export function ContentBuilder() {
 
   const handleSubjectChange = (val: string) => {
     setSubjectId(val);
+    setCustomUnit('');
     if (val !== '__custom__') {
       const first = units.find(u => u.subjectId === val);
       setUnitId(first?.id ?? '__custom__');
@@ -50,9 +53,11 @@ export function ContentBuilder() {
     const ta = textareaRef.current;
     if (!ta) return;
     const start = ta.selectionStart;
-    const after  = content.slice(ta.selectionEnd);
-    setContent(content.slice(0, start) + text + after);
-    setTimeout(() => { ta.focus(); ta.setSelectionRange(start + text.length, start + text.length); }, 0);
+    const end   = ta.selectionEnd;
+    const next  = content.slice(0, start) + text + content.slice(end);
+    setContent(next);
+    const newPos = start + text.length;
+    setTimeout(() => { ta.focus(); ta.setSelectionRange(newPos, newPos); }, 0);
   };
 
   const insertBold = () => {
@@ -112,14 +117,18 @@ export function ContentBuilder() {
   const generateCode = useCallback(() => {
     const vipPrefix = isVip ? '⭐ ' : '';
     const params: string[] = [
-      `'${effectiveSubjectId}'`,
-      `'${effectiveUnitId}'`,
-      `'${vipPrefix}${title || 'Untitled'}'`,
+      `'${esc(effectiveSubjectId)}'`,
+      `'${esc(effectiveUnitId)}'`,
+      `'${esc(vipPrefix + (title || 'Untitled'))}'`,
     ];
     if (content.trim()) {
-      params.push(`\`\n${content.trim()}\n\``);
-      if (contributor) params.push(`'${contributor}'`);
-      if (editor)      params.push(`'${editor}'`);
+      const escapedContent = content.trim()
+        .replace(/\\/g, '\\\\')
+        .replace(/`/g, '\\`')
+        .replace(/\$\{/g, '\\${');
+      params.push(`\`\n${escapedContent}\n\``);
+      if (contributor) params.push(`'${esc(contributor)}'`);
+      if (editor)      params.push(`'${esc(editor)}'`);
     }
     return `${contentType}(${params.join(', ')}),`;
   }, [contentType, effectiveSubjectId, effectiveUnitId, title, isVip, content, contributor, editor]);
