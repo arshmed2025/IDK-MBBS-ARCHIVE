@@ -1,5 +1,6 @@
 import { ArrowLeft, Copy, Check, Lock, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { ContentBuilder } from './ContentBuilder';
 
 interface ContentGuideProps {
   onBack: () => void;
@@ -76,6 +77,10 @@ export function ContentGuide({ onBack }: ContentGuideProps) {
           Open <C>src/data/year1.ts</C> (or year2/year3/year4) — scroll to the topics array — add your line — save — done.
         </p>
       </div>
+
+      <Section title="Content Builder 🆕" icon="🛠️" defaultOpen={true}>
+        <ContentBuilder />
+      </Section>
 
       <Section title="The 6 Functions — Pick One and Go" icon="1️⃣" defaultOpen={true}>
         <p className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">Each content type has its own function. Just pick the right one:</p>
