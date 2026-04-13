@@ -29,6 +29,8 @@ const catColors: Record<string, string> = {
 
 export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [videoModal, setVideoModal] = useState<{ url: string; title: string } | null>(null);
+  const [pdfModal, setPdfModal]     = useState<{ url: string; title: string } | null>(null);
   const subject = subjects.find(s => s.id === topic.subjectId);
   const unit = units.find(u => u.id === topic.unitId);
 
@@ -94,6 +96,8 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
             <MarkdownRenderer
               content={topic.content}
               onImageClick={(src) => setZoomedImage(src)}
+              onVideoClick={(url, title) => setVideoModal({ url, title })}
+              onPdfClick={(url, title) => setPdfModal({ url, title })}
             />
           ) : (
             <p className="text-sm text-zinc-400 dark:text-zinc-500 italic">No notes added yet.</p>
@@ -152,6 +156,59 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
             className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain"
             draggable={false}
           />
+        </div>
+      )}
+
+      {/* Video modal */}
+      {videoModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 no-print"
+          onClick={() => setVideoModal(null)}
+        >
+          <div className="relative w-full max-w-3xl" onClick={e => e.stopPropagation()}>
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-semibold text-white">{videoModal.title}</p>
+              <button
+                type="button"
+                title="Close video"
+                onClick={() => setVideoModal(null)}
+                className="rounded-full bg-white/10 p-1.5 text-white hover:bg-white/20 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <video controls autoPlay className="w-full rounded-xl" src={videoModal.url} />
+          </div>
+        </div>
+      )}
+
+      {/* PDF modal */}
+      {pdfModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 no-print"
+          onClick={() => setPdfModal(null)}
+        >
+          <div
+            className="relative flex h-[85vh] w-full max-w-4xl flex-col"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-semibold text-white">{pdfModal.title}</p>
+              <button
+                type="button"
+                title="Close PDF"
+                onClick={() => setPdfModal(null)}
+                className="rounded-full bg-white/10 p-1.5 text-white hover:bg-white/20 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <iframe
+              src={pdfModal.url.replace('/view', '/preview')}
+              className="h-full w-full rounded-xl border-0"
+              title={pdfModal.title}
+            />
+          </div>
         </div>
       )}
     </div>
