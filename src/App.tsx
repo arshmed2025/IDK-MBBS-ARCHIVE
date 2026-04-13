@@ -547,7 +547,7 @@ function HomeView({
         yearLabel={yearLabel}
         editionYear={new Date().getFullYear()}
         yearSubjects={yearSubjects}
-        stats={getStats(activeYear)}
+        stats={stats}
         onExploreArchive={() =>
           document.getElementById(MBBS_BROWSE_ANCHOR_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
