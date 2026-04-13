@@ -1,4 +1,5 @@
 import React from 'react';
+import { Play } from 'lucide-react';
 
 interface MarkdownRendererProps {
   content: string;
@@ -231,49 +232,49 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, onI
     }
 
     // VIDEO block line
-    if (line.startsWith('[VIDEO:')) {
-      const m = line.match(/^\[VIDEO:\s*([^\]]*)\]\(([^)]+)\)/);
-      if (m) {
-        const [, videoTitle, url] = m;
-        elements.push(
-          <div
-            key={key++}
-            role="button"
-            onClick={() => onVideoClick?.(url, videoTitle)}
-            className="my-3 flex cursor-pointer items-center gap-3 rounded-xl bg-zinc-900 dark:bg-zinc-950 px-4 py-3 transition-colors hover:bg-zinc-800 dark:hover:bg-zinc-900"
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500 text-[10px] text-white">▶</div>
-            <div>
-              <div className="text-sm font-semibold text-white">{videoTitle}</div>
-              <div className="text-xs text-zinc-500">Click to play</div>
-            </div>
+    const videoM = line.match(/^\[VIDEO:\s*([^\]]*)\]\(([^)]+)\)/);
+    if (videoM) {
+      const [, videoTitle, url] = videoM;
+      elements.push(
+        <div
+          key={key++}
+          role="button"
+          tabIndex={0}
+          onClick={() => onVideoClick?.(url, videoTitle)}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onVideoClick?.(url, videoTitle)}
+          className="my-3 flex cursor-pointer items-center gap-3 rounded-xl bg-zinc-900 dark:bg-zinc-950 px-4 py-3 transition-colors hover:bg-zinc-800 dark:hover:bg-zinc-900"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white"><Play size={14} /></div>
+          <div>
+            <div className="text-sm font-semibold text-white">{videoTitle}</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Click to play</div>
           </div>
-        );
-        i++; continue;
-      }
+        </div>
+      );
+      i++; continue;
     }
 
     // PDF block line
-    if (line.startsWith('[PDF:')) {
-      const m = line.match(/^\[PDF:\s*([^\]]*)\]\(([^)]+)\)/);
-      if (m) {
-        const [, pdfTitle, url] = m;
-        elements.push(
-          <div
-            key={key++}
-            role="button"
-            onClick={() => onPdfClick?.(url, pdfTitle)}
-            className="my-3 flex cursor-pointer items-center gap-3 rounded-xl border border-orange-200 dark:border-orange-500/20 bg-orange-50 dark:bg-orange-500/10 px-4 py-3 transition-colors hover:bg-orange-100 dark:hover:bg-orange-500/15"
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-500 text-xs font-bold text-white">PDF</div>
-            <div>
-              <div className="text-sm font-semibold text-orange-700 dark:text-orange-400">{pdfTitle}</div>
-              <div className="text-xs text-orange-400 dark:text-orange-500">Click to open</div>
-            </div>
+    const pdfM = line.match(/^\[PDF:\s*([^\]]*)\]\(([^)]+)\)/);
+    if (pdfM) {
+      const [, pdfTitle, url] = pdfM;
+      elements.push(
+        <div
+          key={key++}
+          role="button"
+          tabIndex={0}
+          onClick={() => onPdfClick?.(url, pdfTitle)}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onPdfClick?.(url, pdfTitle)}
+          className="my-3 flex cursor-pointer items-center gap-3 rounded-xl border border-orange-200 dark:border-orange-500/20 bg-orange-50 dark:bg-orange-500/10 px-4 py-3 transition-colors hover:bg-orange-100 dark:hover:bg-orange-500/15"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-500 text-xs font-bold text-white">PDF</div>
+          <div>
+            <div className="text-sm font-semibold text-orange-700 dark:text-orange-400">{pdfTitle}</div>
+            <div className="text-xs text-orange-400 dark:text-orange-500">Click to open</div>
           </div>
-        );
-        i++; continue;
-      }
+        </div>
+      );
+      i++; continue;
     }
 
     // Image line
