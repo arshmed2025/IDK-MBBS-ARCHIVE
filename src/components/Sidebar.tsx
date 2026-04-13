@@ -112,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <select
               value={activeYear}
               onChange={(e) => onYearChange(Number(e.target.value) as YearId)}
-              className="w-full appearance-none rounded-lg bg-white dark:bg-zinc-800 px-3 py-2 pr-8 text-sm font-medium text-zinc-800 dark:text-zinc-200 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500/40"
+              className="w-full appearance-none rounded-lg bg-white dark:bg-zinc-800 px-3 py-2 pr-8 text-sm font-medium text-zinc-800 dark:text-zinc-200 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-700 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
             >
               {years.map((y) => (
                 <option key={y.id} value={y.id}>{y.label} — {y.subtitle}</option>
@@ -124,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Search */}
         <div className="px-3 pt-3">
-          <div className="flex items-center gap-2 rounded-xl border border-transparent bg-zinc-100/90 px-3 py-2 transition-colors focus-within:border-violet-300/50 focus-within:bg-white dark:bg-zinc-800/80 dark:focus-within:border-violet-500/30 dark:focus-within:bg-zinc-800">
+          <div className="flex items-center gap-2 rounded-xl border border-transparent bg-zinc-100/90 px-3 py-2 transition-colors focus-within:border-sky-300/50 focus-within:bg-white dark:bg-zinc-800/80 dark:focus-within:border-sky-500/30 dark:focus-within:bg-zinc-800">
             <Search size={14} className="shrink-0 text-zinc-400 dark:text-zinc-500" />
             <input
               type="text"
