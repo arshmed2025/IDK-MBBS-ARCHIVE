@@ -152,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
-              <Home size={15} className={activeView === 'home' ? 'text-violet-600 dark:text-violet-400' : 'text-zinc-400 dark:text-zinc-500'} />
+              <Home size={15} className={activeView === 'home' ? 'text-sky-600 dark:text-sky-400' : 'text-zinc-400 dark:text-zinc-500'} />
               Overview
             </button>
             <button
@@ -176,7 +176,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               )}
             >
-              <Mail size={15} className={activeView === 'contribute' ? 'text-violet-500 dark:text-violet-400' : 'text-zinc-400 dark:text-zinc-500'} />
+              <Mail size={15} className={activeView === 'contribute' ? 'text-sky-500 dark:text-sky-400' : 'text-zinc-400 dark:text-zinc-500'} />
               Contribute
             </button>
           </div>
