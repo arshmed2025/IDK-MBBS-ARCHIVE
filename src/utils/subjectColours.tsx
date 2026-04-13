@@ -1,4 +1,4 @@
-// src/utils/subjectColours.ts
+// src/utils/subjectColours.tsx
 
 /** One hex colour per subject ID. Used as badge background, card left-border, sidebar active tint. */
 export const SUBJECT_COLOURS: Record<string, string> = {
@@ -26,8 +26,16 @@ export function subjectColour(subjectId: string): string {
   return SUBJECT_COLOURS[subjectId] ?? '#71717a';
 }
 
-/** 2-letter monogram derived from the subject name (e.g. "Anatomy" → "An", "ENT" → "EN"). */
-export function subjectMonogram(name: string): string {
+/** Explicit overrides for subjects whose auto-generated monogram collides. */
+const MONOGRAM_OVERRIDES: Record<string, string> = {
+  pharmacology: 'Pk',
+};
+
+/** 2-letter monogram derived from the subject name, with collision overrides. */
+export function subjectMonogram(name: string, subjectId?: string): string {
+  if (subjectId && MONOGRAM_OVERRIDES[subjectId]) {
+    return MONOGRAM_OVERRIDES[subjectId];
+  }
   const clean = name.trim();
   if (clean.length < 2) return clean.toUpperCase();
   const isAcronym = clean[0] === clean[0].toUpperCase() && clean[1] === clean[1].toUpperCase();
@@ -46,7 +54,7 @@ interface SubjectBadgeProps {
 /** Solid-colour rounded square with a 2-letter monogram. No emoji. */
 export function SubjectBadge({ subjectId, subjectName, size = 'md' }: SubjectBadgeProps) {
   const colour = subjectColour(subjectId);
-  const monogram = subjectMonogram(subjectName);
+  const monogram = subjectMonogram(subjectName, subjectId);
   const dim = size === 'sm' ? 22 : 36;
   const fontSize = size === 'sm' ? 9 : 12;
 

@@ -142,7 +142,7 @@ export function LandingEditorial({
       </section>
 
       {/* ── Subject cards ── */}
-      <section id={MBBS_BROWSE_ANCHOR_ID} className="py-10 md:py-14">
+      <section className="py-10 md:py-14">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8">
             <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 md:text-3xl">
