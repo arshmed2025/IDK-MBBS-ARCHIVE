@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Star, ZoomIn, X } from 'lucide-react';
 import { type Topic, subjects, units } from '../data/index';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -33,6 +33,18 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
   const [pdfModal, setPdfModal]     = useState<{ url: string; title: string } | null>(null);
   const subject = subjects.find(s => s.id === topic.subjectId);
   const unit = units.find(u => u.id === topic.unitId);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setZoomedImage(null);
+        setVideoModal(null);
+        setPdfModal(null);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, []);
 
   const handlePrint = () => window.print();
 
@@ -177,7 +189,7 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
                 <X size={18} />
               </button>
             </div>
-            <video controls autoPlay className="w-full rounded-xl" src={videoModal.url} />
+            <video controls className="w-full rounded-xl" src={videoModal.url} />
           </div>
         </div>
       )}
@@ -204,10 +216,19 @@ export const TopicDetail: React.FC<TopicDetailProps> = ({ topic, onBack }) => {
               </button>
             </div>
             <iframe
-              src={pdfModal.url.replace('/view', '/preview')}
+              src={pdfModal.url.replace(/\/view(\?|$)/, '/preview$1')}
               className="h-full w-full rounded-xl border-0"
               title={pdfModal.title}
+              allow="fullscreen"
             />
+            <a
+              href={pdfModal.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 text-center text-xs text-white/60 underline hover:text-white/90"
+            >
+              Open in new tab
+            </a>
           </div>
         </div>
       )}
