@@ -26,10 +26,14 @@ export function subjectColour(subjectId: string): string {
   return SUBJECT_COLOURS[subjectId] ?? '#71717a';
 }
 
-/** 2-letter monogram derived from the subject name (e.g. "Anatomy" → "An"). */
+/** 2-letter monogram derived from the subject name (e.g. "Anatomy" → "An", "ENT" → "EN"). */
 export function subjectMonogram(name: string): string {
   const clean = name.trim();
-  return clean.length >= 2 ? clean[0].toUpperCase() + clean[1].toLowerCase() : clean.toUpperCase();
+  if (clean.length < 2) return clean.toUpperCase();
+  const isAcronym = clean[0] === clean[0].toUpperCase() && clean[1] === clean[1].toUpperCase();
+  return isAcronym
+    ? clean[0] + clean[1]
+    : clean[0].toUpperCase() + clean[1].toLowerCase();
 }
 
 interface SubjectBadgeProps {
