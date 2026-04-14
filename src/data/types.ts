@@ -32,11 +32,11 @@ export interface Topic {
 
 // ─── Year Metadata ───────────────────────────────────────────────────────────
 
-export const years: { id: YearId; label: string; subtitle: string }[] = [
+export const years: { id: YearId; label: string; subtitle: string; disabled?: boolean }[] = [
   { id: 1, label: 'Year 1', subtitle: 'Pre-clinical foundations' },
-  { id: 2, label: 'Year 2', subtitle: 'Para-clinical sciences' },
-  { id: 3, label: 'Year 3', subtitle: 'Clinical rotations I' },
-  { id: 4, label: 'Year 4', subtitle: 'Clinical rotations II' },
+  { id: 2, label: 'Year 2', subtitle: 'Para-clinical sciences',  disabled: true },
+  { id: 3, label: 'Year 3', subtitle: 'Clinical rotations I',    disabled: true },
+  { id: 4, label: 'Year 4', subtitle: 'Clinical rotations II',   disabled: true },
 ];
 
 // ─── Categories ──────────────────────────────────────────────────────────────
