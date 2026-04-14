@@ -39,10 +39,10 @@ export function LandingEditorial({
   const moreCount = Math.max(0, yearSubjects.length - previewSubjects.length);
 
   const statTags = [
-    stats.topics    > 0 && `${stats.topics} Topics`,
-    stats.pyqs      > 0 && `${stats.pyqs} PYQs`,
-    stats.pyq_pdfs  > 0 && `${stats.pyq_pdfs} PYQ PDFs`,
-    stats.notes     > 0 && `${stats.notes} Notes`,
+    stats.topics > 0 && `${stats.topics} Topics`,
+    stats.pyqs > 0 && `${stats.pyqs} PYQs`,
+    stats.pyq_pdfs > 0 && `${stats.pyq_pdfs} PYQ PDFs`,
+    stats.notes > 0 && `${stats.notes} Notes`,
   ].filter(Boolean) as string[];
 
   return (
@@ -88,9 +88,9 @@ export function LandingEditorial({
 
             {/* Headline */}
             <h1 className="relative text-4xl font-extrabold leading-[1.04] tracking-tight text-zinc-900 sm:text-5xl lg:text-[3.25rem]">
-              Study smarter,
+              I.D.K.
               <span className="block">
-                not harder.{' '}
+                MBBS Archive.{' '}
                 <span className="text-sky-500">✦</span>
               </span>
             </h1>
