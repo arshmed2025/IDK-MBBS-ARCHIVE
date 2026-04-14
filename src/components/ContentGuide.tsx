@@ -72,9 +72,9 @@ export function ContentGuide({ onBack }: ContentGuideProps) {
       </div>
 
       <div className="mb-6 rounded-2xl border border-amber-100 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 p-5">
-        <h2 className="mb-1 text-sm font-semibold text-amber-800 dark:text-amber-400">Everything is in ONE file</h2>
+        <h2 className="mb-1 text-sm font-semibold text-amber-800 dark:text-amber-400">Each subject is its own file</h2>
         <p className="text-sm leading-relaxed text-amber-700 dark:text-amber-500">
-          Open <C>src/data/year1.ts</C> (or year2/year3/year4) — scroll to the topics array — add your line — save — done.
+          Content lives in <C>src/data/yearX/subjectName.ts</C> — e.g. anatomy topics are in <C>src/data/year1/anatomy.ts</C>, pharmacology in <C>src/data/year2/pharmacology.ts</C>. Open the file for the subject you want to edit, add your line, save — done.
         </p>
       </div>
 
@@ -212,9 +212,11 @@ note('pharmacology', 'pharm-ans', 'ANS Quick Ref Table'),`} />
       </Section>
 
       <Section title="Adding New Subjects or Chapters" icon="🏗️">
-        <CopyBlock label="Add a new subject" code={`// In the subjects array:\n{ id: 'community', name: 'Community Medicine', icon: '🏥', year: 2 },`} />
-        <CopyBlock label="Add chapters for it" code={`// In the units array:\n{ id: 'comm-epi', subjectId: 'community', name: 'Epidemiology', order: 1 },\n{ id: 'comm-bio', subjectId: 'community', name: 'Biostatistics', order: 2 },`} />
-        <CopyBlock label="Then add topics" code={`topic('community', 'comm-epi', 'Study Designs — Overview'),\ntopic('community', 'comm-bio', 'Mean, Median, Mode'),`} />
+        <p className="mb-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">To add a brand-new subject (e.g. Community Medicine in Year 2), follow these 4 steps in order:</p>
+        <CopyBlock label="Step 1 — Register in types.ts (subjects array)" code={`// src/data/types.ts — subjects array\n{ id: 'community', name: 'Community Medicine', icon: '🏥', year: 2 },`} />
+        <CopyBlock label="Step 2 — Add chapters in types.ts (units array)" code={`// src/data/types.ts — units array\n{ id: 'comm-epi', subjectId: 'community', name: 'Epidemiology', order: 1 },\n{ id: 'comm-bio', subjectId: 'community', name: 'Biostatistics', order: 2 },`} />
+        <CopyBlock label="Step 3 — Create the subject file" code={`// NEW FILE: src/data/year2/community.ts\nimport { topic, type Topic } from '../types';\n\nexport const communityTopics: Topic[] = [\n  topic('community', 'comm-epi', 'Study Designs — Overview'),\n  topic('community', 'comm-bio', 'Mean, Median, Mode'),\n];`} />
+        <CopyBlock label="Step 4 — Wire it into the year index" code={`// src/data/year2/index.ts — add import + spread\nimport { communityTopics } from './community';\n\nexport const year2Topics: Topic[] = [\n  ...pathologyTopics,\n  ...pharmacologyTopics,\n  ...microbiologyTopics,\n  ...forensicTopics,\n  ...communityTopics,  // ← add this\n];`} />
       </Section>
 
       <Section title="Subject & Chapter ID Reference" icon="🗂️">
