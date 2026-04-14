@@ -1,3 +1,7 @@
 node_modules
 dist
 .worktrees
+
+# Claude Code / Superpowers tooling
+.claude/
+.superpowers/
