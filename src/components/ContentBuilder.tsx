@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Copy, Check, X } from 'lucide-react';
 import { subjects, units } from '../data/index';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -31,6 +31,17 @@ export function ContentBuilder() {
   const [videoModal,  setVideoModal]  = useState<{ url: string; title: string } | null>(null);
   const [pdfModal,    setPdfModal]    = useState<{ url: string; title: string } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setVideoModal(null);
+        setPdfModal(null);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, []);
 
   const isCustomSubject = subjectId === '__custom__';
   const isCustomUnit    = unitId    === '__custom__';
@@ -127,8 +138,8 @@ export function ContentBuilder() {
         .replace(/`/g, '\\`')
         .replace(/\$\{/g, '\\${');
       params.push(`\`\n${escapedContent}\n\``);
-      if (contributor) params.push(`'${esc(contributor)}'`);
-      if (editor)      params.push(`'${esc(editor)}'`);
+      if (contributor || editor) params.push(contributor ? `'${esc(contributor)}'` : `''`);
+      if (editor)                params.push(`'${esc(editor)}'`);
     }
     return `${contentType}(${params.join(', ')}),`;
   }, [contentType, effectiveSubjectId, effectiveUnitId, title, isVip, content, contributor, editor]);
