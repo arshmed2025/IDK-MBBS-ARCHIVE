@@ -219,6 +219,15 @@ note('pharmacology', 'pharm-ans', 'ANS Quick Ref Table'),`} />
         <CopyBlock label="Step 4 — Wire it into the year index" code={`// src/data/year2/index.ts — add import + spread\nimport { communityTopics } from './community';\n\nexport const year2Topics: Topic[] = [\n  ...pathologyTopics,\n  ...pharmacologyTopics,\n  ...microbiologyTopics,\n  ...forensicTopics,\n  ...communityTopics,  // ← add this\n];`} />
       </Section>
 
+      <Section title="Enabling / Disabling Years" icon="🔒">
+        <p className="mb-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          Years 2–4 show "Coming Soon" and are unselectable until you enable them. One line in <C>src/data/types.ts</C>:
+        </p>
+        <CopyBlock label="Unlock a year — remove disabled: true" code={`// src/data/types.ts\nexport const years = [\n  { id: 1, label: 'Year 1', subtitle: 'Pre-clinical foundations' },\n  { id: 2, label: 'Year 2', subtitle: 'Para-clinical sciences' },  // ← disabled: true removed\n  { id: 3, label: 'Year 3', subtitle: 'Clinical rotations I',   disabled: true },\n  { id: 4, label: 'Year 4', subtitle: 'Clinical rotations II',  disabled: true },\n];`} />
+        <CopyBlock label="Re-disable a year — add disabled: true back" code={`{ id: 2, label: 'Year 2', subtitle: 'Para-clinical sciences', disabled: true },`} />
+        <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">After editing, run <C>npm run build</C> to rebuild the site.</p>
+      </Section>
+
       <Section title="Subject & Chapter ID Reference" icon="🗂️">
         <div className="space-y-3">
           <IDGroup title="Year 1" items={[
